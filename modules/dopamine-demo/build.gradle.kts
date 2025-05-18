@@ -13,5 +13,5 @@ dependencies {
     testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotest.framework.engine)
-// 	testImplementation(libs.kotest.extensions.spring)
+    testImplementation(libs.kotest.extensions.spring)
 }

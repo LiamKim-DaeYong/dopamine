@@ -12,6 +12,11 @@ enum class TimestampFormat(private val pattern: String) {
     ISO_8601("yyyy-MM-dd'T'HH:mm:ss"),
 
     /**
+     * ISO 표준 + 밀리초: 2025-05-17T16:30:00.123
+     */
+    ISO_8601_MILLIS("yyyy-MM-dd'T'HH:mm:ss.SSS"),
+
+    /**
      * 일반적인 날짜-시간 포맷: 2025-05-17 16:30:00
      */
     DATETIME("yyyy-MM-dd HH:mm:ss"),

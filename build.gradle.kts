@@ -37,7 +37,6 @@ allprojects {
     // 테스트 공통 로깅 설정
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
-
         testLogging {
             events("passed", "skipped", "failed")
             exceptionFormat = TestExceptionFormat.FULL
@@ -47,19 +46,27 @@ allprojects {
 }
 
 val ktlintCliVersion = libs.versions.ktlint.cli.get()
+val jacocoExcludes = listOf(
+    "**/Q*",
+    "**/*Config*",
+    "**/dto/**",
+    "**/generated/**",
+    "**/Dummy*",
+    "**/*Kt.class"
+)
+
 subprojects {
-    // Ktlint 설정
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "jacoco")
 
+    // Ktlint 설정
     configure<KtlintExtension> {
         version.set(ktlintCliVersion)
         android.set(false)
         outputToConsole.set(true)
 
         filter {
-            exclude("**/build/**")
-            exclude("**/generated/**")
+            exclude("**/build/**", "**/generated/**")
         }
 
         reporters {
@@ -68,38 +75,86 @@ subprojects {
         }
     }
 
-    // 테스트 → jacoco 리포트 자동 실행 연결
+    // 테스트 후 jacocoTestReport 실행
     tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
         finalizedBy("jacocoTestReport")
     }
 
-    // jacoco 리포트 설정 (자동 생성된 task에 설정만 덮어씌움)
-    tasks.matching { it.name == "jacocoTestReport" }.configureEach {
-        this as JacocoReport
+    afterEvaluate {
+        // 각 모듈에 jacocoTestReport 정의
+        tasks.matching { it.name == "jacocoTestReport" }.configureEach {
+            this as JacocoReport
 
-        group = "verification"
-        description = "Generates code coverage report for the test task using Jacoco"
+            group = "verification"
+            description = "Configures Jacoco coverage report for individual module"
 
-        reports {
-            html.required.set(true)
-            xml.required.set(true)
+            dependsOn(tasks.named("test"))
+
+            val classDir = layout.buildDirectory.dir("classes/kotlin/main").get().asFile
+            val execDir = layout.buildDirectory.get().asFile
+
+            classDirectories.setFrom(
+                fileTree(classDir) {
+                    include("**/*.class")
+                    exclude(jacocoExcludes)
+                }
+            )
+            sourceDirectories.setFrom(files("src/main/kotlin"))
+            executionData.setFrom(fileTree(execDir).include("jacoco/test.exec"))
+
+            reports {
+                html.required.set(true)
+                xml.required.set(true)
+            }
         }
 
-        val buildDirPath = layout.buildDirectory.asFile.get()
+        // Spring Boot annotationProcessor 자동 추가
+        if (pluginManager.hasPlugin("org.springframework.boot")) {
+            project.dependencies.add(
+                "annotationProcessor",
+                libs.spring.boot.configuration.processor.get()
+            )
+        }
 
-        classDirectories.setFrom(
-            fileTree(buildDirPath.resolve("classes/kotlin/main")) {
-                exclude("**/Q*")
-            }
-        )
-        executionData.setFrom(files(buildDirPath.resolve("jacoco/test.exec")))
-        sourceDirectories.setFrom(files("src/main/kotlin"))
+        // application 플러그인이 없는 경우 bootJar 비활성화
+        if (!pluginManager.hasPlugin("application")) {
+            tasks.findByName("bootJar")?.enabled = false
+            tasks.findByName("jar")?.enabled = true
+        }
+    }
+}
+
+tasks.register<JacocoReport>("jacocoRootReport") {
+    group = "verification"
+    description = "Aggregated Jacoco coverage report across all modules"
+
+    dependsOn(subprojects.flatMap { it.tasks.matching { it.name == "test" } })
+
+    val classDirs = subprojects.mapNotNull { sub ->
+        val dir = sub.layout.buildDirectory.get().asFile.resolve("classes/kotlin/main")
+        if (dir.exists()) fileTree(dir) {
+            include("**/*.class")
+            exclude(jacocoExcludes)
+        } else null
     }
 
-    // Spring Boot 프로젝트에 annotationProcessor 자동 추가
-    pluginManager.withPlugin("org.springframework.boot") {
-        dependencies {
-            add("annotationProcessor", libs.spring.boot.configuration.processor)
-        }
+    val sourceDirs = subprojects.mapNotNull { sub ->
+        val src = sub.projectDir.resolve("src/main/kotlin")
+        if (src.exists()) src else null
+    }
+
+    val execFiles = subprojects.mapNotNull { sub ->
+        val exec = sub.layout.buildDirectory.get().asFile.resolve("jacoco/test.exec")
+        if (exec.exists()) exec else null
+    }
+
+    classDirectories.setFrom(classDirs)
+    sourceDirectories.setFrom(sourceDirs)
+    executionData.setFrom(execFiles)
+
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
     }
 }

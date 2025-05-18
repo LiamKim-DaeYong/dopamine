@@ -36,40 +36,39 @@ class ApiResponseAdvice(
         request: ServerHttpRequest,
         response: ServerHttpResponse,
     ): Any? {
+        // 1. reactive는 무시
+        if (isReactiveType(body)) return body
+
+        // 2. ResponseEntity는 자동 래핑 금지
+        if (returnType.parameterType.name.contains("ResponseEntity")) return body
+
+        // 3. 이미 래핑된 경우도 그대로 반환
+        if (body is DopamineResponse<*>) return applyFormatting(body)
+
         val timestamp = LocalDateTime.now().format(props.timestampFormat.formatter())
         val meta = if (props.includeMeta) buildMeta() else null
+        val wrapped = DopamineResponse.success(body, timestamp = timestamp, meta = meta)
 
-        return when (body) {
-            is DopamineResponse<*> -> applyFormatting(body, timestamp, meta)
-            is String -> {
-                val wrapped = DopamineResponse.success(body, timestamp = timestamp, meta = meta)
-                objectMapper.writeValueAsString(wrapped)
-            }
-            else -> DopamineResponse.success(body, timestamp = timestamp, meta = meta)
-        }
+        val isStringReturn = returnType.parameterType == String::class.java
+        return if (isStringReturn) objectMapper.writeValueAsString(wrapped) else wrapped
+    }
+
+    private fun isReactiveType(body: Any?): Boolean {
+        return body != null && body::class.java.name.startsWith("reactor.core.publisher.")
     }
 
     private fun buildMeta(): Map<String, Any> {
         val meta = mutableMapOf<String, Any>()
-
         if (props.metaOptions.includeTraceId) {
             val traceKey = props.metaOptions.traceIdKey
-            MDC.get(traceKey)?.let {
-                meta[traceKey] = it
-            }
+            MDC.get(traceKey)?.let { meta[traceKey] = it }
         }
-
         return meta
     }
 
-    private fun <T> applyFormatting(
-        body: DopamineResponse<T>,
-        timestamp: String,
-        meta: Map<String, Any>?,
-    ): DopamineResponse<T> {
-        return body.copy(
-            timestamp = timestamp,
-            meta = meta ?: body.meta,
-        )
+    private fun <T> applyFormatting(body: DopamineResponse<T>): DopamineResponse<T> {
+        val timestamp = LocalDateTime.now().format(props.timestampFormat.formatter())
+        val meta = if (props.includeMeta) buildMeta() else body.meta
+        return body.copy(timestamp = timestamp, meta = meta)
     }
 }

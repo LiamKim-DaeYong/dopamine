@@ -1,5 +1,6 @@
 package io.dopamine.response.trace
 
+import io.dopamine.response.config.ResponseProperties
 import io.dopamine.response.config.ResponsePropertyKeys
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
@@ -8,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 class TraceIdConfig(
     private val traceIdResolver: TraceIdResolver,
+    private val props: ResponseProperties,
 ) : WebMvcConfigurer {
     @Bean
     @ConditionalOnProperty(
@@ -15,7 +17,7 @@ class TraceIdConfig(
         havingValue = "true",
         matchIfMissing = true,
     )
-    fun traceIdInterceptor(): TraceIdInterceptor = TraceIdInterceptor(traceIdResolver)
+    fun traceIdInterceptor(): TraceIdInterceptor = TraceIdInterceptor(traceIdResolver, props)
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         runCatching { traceIdInterceptor() }

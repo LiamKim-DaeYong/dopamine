@@ -11,6 +11,6 @@ import io.dopamine.response.code.ResponseCode
  */
 open class DopamineException(
     val responseCode: ResponseCode,
-    override val message: String = responseCode.message,
+    override val message: String,
     override val cause: Throwable? = null,
 ) : RuntimeException(message, cause)
