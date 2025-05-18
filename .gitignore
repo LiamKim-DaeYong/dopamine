@@ -1,0 +1,49 @@
+# === Gradle build ===
+.gradle/
+build/
+out/
+!gradle/wrapper/gradle-wrapper.jar
+
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# === Kotlin/Java ===
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# === OS / Editor ===
+.DS_Store
+Thumbs.db
+
+# === ktlint ===
+.ktlint*
+ktlint-report-*
+**/build/reports/ktlint/
+
+# === Generated sources ===
+**/build/generated/
+**/generated/
+
+# === Dependency caches ===
+node_modules/
+npm-debug.log
+.yarn/
+.pnpm-debug.log
+
+# === JetBrains caches ===
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/shelf/
+
+# === Test reports & coverage ===
+**/build/test-results/
+**/build/reports/
+**/build/jacoco/
+coverage/
