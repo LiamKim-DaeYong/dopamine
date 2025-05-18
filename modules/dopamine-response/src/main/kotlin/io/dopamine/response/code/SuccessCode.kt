@@ -13,7 +13,8 @@ enum class SuccessCode(
     SUCCESS(HttpStatus.OK),
     CREATED(HttpStatus.CREATED),
     ACCEPTED(HttpStatus.ACCEPTED),
-    NO_CONTENT(HttpStatus.NO_CONTENT);
+    NO_CONTENT(HttpStatus.NO_CONTENT),
+    ;
 
     constructor(httpStatus: HttpStatus) : this(
         code = httpStatus.name,

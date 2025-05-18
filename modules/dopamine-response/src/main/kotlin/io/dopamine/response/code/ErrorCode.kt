@@ -32,7 +32,8 @@ enum class ErrorCode(
 
     // External
     GATEWAY_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT),
-    BAD_GATEWAY(HttpStatus.BAD_GATEWAY);
+    BAD_GATEWAY(HttpStatus.BAD_GATEWAY),
+    ;
 
     constructor(httpStatus: HttpStatus) : this(
         code = httpStatus.name,

@@ -24,7 +24,8 @@ enum class TimestampFormat(private val pattern: String) {
     /**
      * 밀집된 형태, 파일명/ID 등에 적합: 20250517T163000
      */
-    COMPACT("yyyyMMdd'T'HHmmss");
+    COMPACT("yyyyMMdd'T'HHmmss"),
+    ;
 
     fun formatter(): DateTimeFormatter = DateTimeFormatter.ofPattern(pattern)
 }
