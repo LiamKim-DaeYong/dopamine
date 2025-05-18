@@ -1,5 +1,6 @@
 package io.dopamine.response.trace
 
+import io.dopamine.response.config.ResponseProperties
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.MDC
@@ -7,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor
 
 class TraceIdInterceptor(
     private val traceIdResolver: TraceIdResolver,
+    private val props: ResponseProperties,
 ) : HandlerInterceptor {
     override fun preHandle(
         request: HttpServletRequest,
@@ -14,7 +16,8 @@ class TraceIdInterceptor(
         handler: Any,
     ): Boolean {
         val traceId = traceIdResolver.resolve(request)
-        MDC.put(TraceIdConstants.MDC_KEY, traceId)
+        val mdcKey = props.metaOptions.traceIdKey
+        MDC.put(mdcKey, traceId)
         return true
     }
 
@@ -24,6 +27,7 @@ class TraceIdInterceptor(
         handler: Any,
         ex: Exception?,
     ) {
-        MDC.remove(TraceIdConstants.MDC_KEY)
+        val mdcKey = props.metaOptions.traceIdKey
+        MDC.remove(mdcKey)
     }
 }

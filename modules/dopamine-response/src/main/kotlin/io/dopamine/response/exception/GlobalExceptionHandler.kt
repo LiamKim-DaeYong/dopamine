@@ -2,23 +2,19 @@ package io.dopamine.response.exception
 
 import io.dopamine.response.code.ErrorCode
 import io.dopamine.response.code.ResponseCode
+import io.dopamine.response.code.ResponseCodeRegistry
 import io.dopamine.response.model.DopamineResponse
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.http.ResponseEntity
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.NoHandlerFoundException
-import java.time.LocalDateTime
 
-@ConditionalOnProperty(
-    name = ["dopamine.response.formatting.enabled"],
-    havingValue = "true",
-    matchIfMissing = true,
-)
 @RestControllerAdvice
-class GlobalExceptionHandler {
+class GlobalExceptionHandler(
+    private val responseCodeRegistry: ResponseCodeRegistry,
+) {
     @ExceptionHandler(DopamineException::class)
     fun handleDopamineException(e: DopamineException): ResponseEntity<DopamineResponse<Unit>> =
         buildErrorResponse(e.responseCode)
@@ -54,21 +50,17 @@ class GlobalExceptionHandler {
 
     private fun buildErrorResponse(
         code: ResponseCode,
-        message: String,
+        message: String? = null,
         meta: Map<String, Any>? = null,
-    ): ResponseEntity<DopamineResponse<Unit>> =
-        ResponseEntity.status(code.httpStatus).body(
-            DopamineResponse(
-                code = code.code,
-                message = message,
-                data = null,
-                timestamp = LocalDateTime.now().toString(),
-                meta = meta,
-            ),
-        )
+    ): ResponseEntity<DopamineResponse<Unit>> {
+        val resolved = responseCodeRegistry.resolve(code)
+        val finalMessage = message ?: resolved.message
+        return ResponseEntity.status(resolved.httpStatus)
+            .body(DopamineResponse.error(resolved, finalMessage, meta))
+    }
 
     private fun buildErrorResponse(
         code: ResponseCode,
         meta: Map<String, Any>? = null,
-    ): ResponseEntity<DopamineResponse<Unit>> = buildErrorResponse(code, code.message, meta)
+    ): ResponseEntity<DopamineResponse<Unit>> = buildErrorResponse(code, null, meta)
 }

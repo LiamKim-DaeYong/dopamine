@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.dopamine.response.advice.ApiResponseAdvice
+import io.dopamine.response.code.ResponseCodeRegistry
 import io.dopamine.response.exception.GlobalExceptionHandler
+import io.dopamine.response.trace.DefaultTraceIdResolver
 import io.dopamine.response.trace.TraceIdConfig
+import io.dopamine.response.trace.TraceIdResolver
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
@@ -17,8 +20,7 @@ import org.springframework.context.annotation.Import
 @Configuration
 @ConditionalOnWebApplication
 @ConditionalOnProperty(
-    prefix = "dopamine.response",
-    name = ["enabled"],
+    name = [ResponsePropertyKeys.ENABLED],
     havingValue = "true",
     matchIfMissing = true,
 )
@@ -26,6 +28,7 @@ import org.springframework.context.annotation.Import
     ApiResponseAdvice::class,
     GlobalExceptionHandler::class,
     TraceIdConfig::class,
+    ResponseCodeRegistry::class,
 )
 @EnableConfigurationProperties(ResponseProperties::class)
 class ResponseAutoConfiguration {
@@ -36,5 +39,10 @@ class ResponseAutoConfiguration {
             registerModule(JavaTimeModule())
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
+    }
+
+    @Bean
+    fun traceIdResolver(props: ResponseProperties): TraceIdResolver {
+        return DefaultTraceIdResolver(props)
     }
 }

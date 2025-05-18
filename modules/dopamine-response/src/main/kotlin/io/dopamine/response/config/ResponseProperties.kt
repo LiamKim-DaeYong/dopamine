@@ -2,6 +2,7 @@ package io.dopamine.response.config
 
 import io.dopamine.response.format.TimestampFormat
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.http.HttpStatus
 
 @ConfigurationProperties("dopamine.response")
 data class ResponseProperties(
@@ -24,6 +25,12 @@ data class ResponseProperties(
      * 응답 timestamp 포맷 설정 (ISO_8601, DATETIME, COMPACT 등)
      */
     val timestampFormat: TimestampFormat = TimestampFormat.ISO_8601,
+    /**
+     * HttpStatus 기반 응답 코드/메시지 커스터마이징 설정
+     * - 원하는 메시지로 덮어쓰거나, 내부 코드명을 재정의할 수 있음
+     * - 각 항목은 httpStatus 기준으로 매핑됨
+     */
+    val codes: List<CustomResponseCode> = emptyList(),
 ) {
     /**
      * meta 필드 세부 항목 설정 클래스
@@ -34,9 +41,26 @@ data class ResponseProperties(
          */
         val includeTraceId: Boolean = true,
         /**
+         * meta.traceId의 key 명칭 (예: traceId, X-Trace-ID 등)
+         */
+        val traceIdKey: String = "traceId",
+        /**
+         * 클라이언트 요청에서 traceId 값을 추출할 HTTP 헤더 이름
+         */
+        val traceIdHeader: String = "X-Trace-ID",
+        /**
          * 페이징 정보(paging)를 meta에 포함할지 여부
          * Page<T> 또는 유사 구조일 경우 자동 추출
          */
         val includePaging: Boolean = true,
+    )
+
+    /**
+     * 설정 파일로 정의할 수 있는 사용자 응답 코드 구조
+     */
+    data class CustomResponseCode(
+        val httpStatus: HttpStatus,
+        val code: String,
+        val message: String,
     )
 }

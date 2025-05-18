@@ -1,28 +1,25 @@
 package io.dopamine.response.trace
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import io.dopamine.response.config.ResponsePropertyKeys
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
-class TraceIdConfig : WebMvcConfigurer {
-    @Bean
-    @ConditionalOnMissingBean
-    fun traceIdResolver(): TraceIdResolver = DefaultTraceIdResolver()
-
+class TraceIdConfig(
+    private val traceIdResolver: TraceIdResolver,
+) : WebMvcConfigurer {
     @Bean
     @ConditionalOnProperty(
-        name = ["dopamine.response.formatting.meta-options.include-trace-id"],
+        name = [ResponsePropertyKeys.INCLUDE_TRACE_ID],
         havingValue = "true",
         matchIfMissing = true,
     )
-    fun traceIdInterceptor(traceIdResolver: TraceIdResolver): TraceIdInterceptor = TraceIdInterceptor(traceIdResolver)
+    fun traceIdInterceptor(): TraceIdInterceptor = TraceIdInterceptor(traceIdResolver)
 
     override fun addInterceptors(registry: InterceptorRegistry) {
-        val interceptor = runCatching { traceIdInterceptor(traceIdResolver()) }.getOrNull()
-        if (interceptor != null) {
-            registry.addInterceptor(interceptor)
-        }
+        runCatching { traceIdInterceptor() }
+            .getOrNull()
+            ?.let { registry.addInterceptor(it) }
     }
 }

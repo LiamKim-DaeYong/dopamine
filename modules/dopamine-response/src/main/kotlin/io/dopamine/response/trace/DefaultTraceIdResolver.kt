@@ -1,11 +1,14 @@
 package io.dopamine.response.trace
 
+import io.dopamine.response.config.ResponseProperties
 import jakarta.servlet.http.HttpServletRequest
 import java.util.UUID
 
-class DefaultTraceIdResolver : TraceIdResolver {
+class DefaultTraceIdResolver(
+    private val props: ResponseProperties,
+) : TraceIdResolver {
     override fun resolve(request: HttpServletRequest): String {
-        return request.getHeader(TraceIdConstants.HEADER_NAME)
-            ?: UUID.randomUUID().toString()
+        val headerName = props.metaOptions.traceIdHeader
+        return request.getHeader(headerName) ?: UUID.randomUUID().toString()
     }
 }

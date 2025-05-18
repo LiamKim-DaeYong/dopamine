@@ -3,7 +3,6 @@ package io.dopamine.response.advice
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.dopamine.response.config.ResponseProperties
 import io.dopamine.response.model.DopamineResponse
-import io.dopamine.response.trace.TraceIdConstants
 import org.slf4j.MDC
 import org.springframework.core.MethodParameter
 import org.springframework.http.MediaType
@@ -14,6 +13,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
 import java.time.LocalDateTime
 
+/**
+ * API 응답 자동 포맷 Advice
+ * - 응답을 DopamineResponse<T> 형태로 자동 래핑
+ * - timestamp / meta(traceId 등) 자동 포함
+ */
 @RestControllerAdvice
 class ApiResponseAdvice(
     private val props: ResponseProperties,
@@ -49,8 +53,9 @@ class ApiResponseAdvice(
         val meta = mutableMapOf<String, Any>()
 
         if (props.metaOptions.includeTraceId) {
-            MDC.get(TraceIdConstants.MDC_KEY)?.let {
-                meta[TraceIdConstants.MDC_KEY] = it
+            val traceKey = props.metaOptions.traceIdKey
+            MDC.get(traceKey)?.let {
+                meta[traceKey] = it
             }
         }
 
