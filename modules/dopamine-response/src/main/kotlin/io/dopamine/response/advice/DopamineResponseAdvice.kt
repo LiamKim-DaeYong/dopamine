@@ -19,7 +19,7 @@ import java.time.LocalDateTime
  * - timestamp / meta(traceId 등) 자동 포함
  */
 @RestControllerAdvice
-class ApiResponseAdvice(
+class DopamineResponseAdvice(
     private val props: ResponseProperties,
     private val objectMapper: ObjectMapper,
 ) : ResponseBodyAdvice<Any> {
@@ -53,9 +53,8 @@ class ApiResponseAdvice(
         return if (isStringReturn) objectMapper.writeValueAsString(wrapped) else wrapped
     }
 
-    private fun isReactiveType(body: Any?): Boolean {
-        return body != null && body::class.java.name.startsWith("reactor.core.publisher.")
-    }
+    private fun isReactiveType(body: Any?): Boolean =
+        body != null && body::class.java.name.startsWith("reactor.core.publisher.")
 
     private fun buildMeta(): Map<String, Any> {
         val meta = mutableMapOf<String, Any>()

@@ -22,19 +22,16 @@ class SampleController {
         )
 
     @GetMapping("/wrapped")
-    fun getUserWrapped(): DopamineResponse<SampleUserDto> {
-        return DopamineResponse.Companion.success(
+    fun getUserWrapped(): DopamineResponse<SampleUserDto> =
+        DopamineResponse.Companion.success(
             SampleUserDto(
                 id = "user-id",
                 name = "user-name",
             ),
         )
-    }
 
     @GetMapping("/error")
-    fun throwException(): String {
-        throw ExceptionFactory.Validation.badRequest("test exception")
-    }
+    fun throwException(): String = throw ExceptionFactory.Validation.badRequest("test exception")
 
     @GetMapping("/entity")
     fun getEntity(): ResponseEntity<String> = ResponseEntity.ok("entity-response")

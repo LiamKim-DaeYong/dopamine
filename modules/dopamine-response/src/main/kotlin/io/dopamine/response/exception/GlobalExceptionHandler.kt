@@ -22,9 +22,10 @@ class GlobalExceptionHandler(
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationException(e: MethodArgumentNotValidException): DopamineResponse<Unit> {
-        val fieldErrors = e.bindingResult.fieldErrors.map {
-            mapOf("field" to it.field, "message" to (it.defaultMessage ?: "잘못된 값입니다."))
-        }
+        val fieldErrors =
+            e.bindingResult.fieldErrors.map {
+                mapOf("field" to it.field, "message" to (it.defaultMessage ?: "잘못된 값입니다."))
+            }
         return buildErrorResponse(ErrorCode.VALIDATION_FAILED, mapOf("errors" to fieldErrors))
     }
 
@@ -34,7 +35,13 @@ class GlobalExceptionHandler(
 
     @ExceptionHandler(RuntimeException::class)
     fun handleUnexpectedRuntime(e: RuntimeException): DopamineResponse<Unit> =
-        buildErrorResponse(ErrorCode.INTERNAL_ERROR, mapOf("exception" to (e::class.simpleName ?: "RuntimeException")))
+        buildErrorResponse(
+            ErrorCode.INTERNAL_ERROR,
+            e.message,
+            mapOf(
+                "exception" to (e::class.simpleName ?: "RuntimeException"),
+            ),
+        )
 
     @ExceptionHandler(NoHandlerFoundException::class)
     fun handleNotFound(e: NoHandlerFoundException): DopamineResponse<Unit> =

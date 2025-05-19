@@ -3,7 +3,8 @@ package io.dopamine.response.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import io.dopamine.response.advice.ApiResponseAdvice
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.dopamine.response.advice.DopamineResponseAdvice
 import io.dopamine.response.code.ResponseCodeRegistry
 import io.dopamine.response.exception.GlobalExceptionHandler
 import io.dopamine.response.trace.DefaultTraceIdResolver
@@ -25,7 +26,7 @@ import org.springframework.context.annotation.Import
     matchIfMissing = true,
 )
 @Import(
-    ApiResponseAdvice::class,
+    DopamineResponseAdvice::class,
     GlobalExceptionHandler::class,
     TraceIdConfig::class,
     ResponseCodeRegistry::class,
@@ -34,15 +35,13 @@ import org.springframework.context.annotation.Import
 class ResponseAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
-    fun objectMapper(): ObjectMapper {
-        return ObjectMapper().apply {
+    fun objectMapper(): ObjectMapper =
+        ObjectMapper().apply {
             registerModule(JavaTimeModule())
+            registerKotlinModule()
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
-    }
 
     @Bean
-    fun traceIdResolver(props: ResponseProperties): TraceIdResolver {
-        return DefaultTraceIdResolver(props)
-    }
+    fun traceIdResolver(props: ResponseProperties): TraceIdResolver = DefaultTraceIdResolver(props)
 }

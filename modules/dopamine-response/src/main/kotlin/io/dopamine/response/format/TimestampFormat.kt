@@ -5,7 +5,9 @@ import java.time.format.DateTimeFormatter
 /**
  * 응답 타임스탬프 포맷 옵션
  */
-enum class TimestampFormat(private val pattern: String) {
+enum class TimestampFormat(
+    private val pattern: String,
+) {
     /**
      * ISO 표준 포맷: 2025-05-17T16:30:00
      */

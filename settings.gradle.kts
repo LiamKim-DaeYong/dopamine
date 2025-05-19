@@ -5,4 +5,5 @@ include(
     ":modules:dopamine-demo",
     ":modules:dopamine-response",
     ":modules:dopamine-starter-api",
+    ":modules:dopamine-test-support",
 )

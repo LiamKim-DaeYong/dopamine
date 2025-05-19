@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
@@ -20,7 +21,7 @@ allprojects {
         mavenCentral()
     }
 
-    // Java toolchain 설정 (Gradle 8+ 대응)
+    // Java toolchain 설정
     plugins.withType<JavaPlugin> {
         extensions.configure<JavaPluginExtension>("java") {
             toolchain {
@@ -31,7 +32,9 @@ allprojects {
 
     // Kotlin 컴파일러 JVM 타겟 설정
     tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = "21"
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
     }
 
     // 테스트 공통 로깅 설정
