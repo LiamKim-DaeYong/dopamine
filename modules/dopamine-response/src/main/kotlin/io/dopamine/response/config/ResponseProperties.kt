@@ -4,7 +4,7 @@ import io.dopamine.response.format.TimestampFormat
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.HttpStatus
 
-@ConfigurationProperties("dopamine.response")
+@ConfigurationProperties(ResponsePropertyKeys.PREFIX)
 data class ResponseProperties(
     /**
      * DopamineResponse 자동 래핑 기능 활성화 여부

@@ -6,12 +6,10 @@ plugins {
 }
 
 dependencies {
-    api(project(":modules:dopamine-docs"))
-    api(project(":modules:dopamine-response"))
+    implementation(project(":modules:dopamine-core"))
+    implementation(libs.springdoc.openapi.starter.webmvc.ui)
+    implementation(libs.spring.boot.autoconfigure)
 
-    implementation(libs.spring.boot.starter.web)
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotest.runner.junit5)
-    testImplementation(libs.kotest.assertions.core)
-    testImplementation(libs.kotest.framework.engine)
 }

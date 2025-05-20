@@ -51,10 +51,6 @@ class GlobalExceptionHandler(
     fun handleMethodNotAllowed(e: HttpRequestMethodNotSupportedException): DopamineResponse<Unit> =
         buildErrorResponse(ErrorCode.METHOD_NOT_ALLOWED)
 
-    @ExceptionHandler(AccessDeniedException::class)
-    fun handleAccessDenied(e: AccessDeniedException): DopamineResponse<Unit> =
-        buildErrorResponse(ErrorCode.ACCESS_DENIED)
-
     private fun buildErrorResponse(
         code: ResponseCode,
         message: String? = null,
