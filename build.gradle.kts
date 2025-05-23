@@ -1,68 +1,62 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import io.dopamine.build.ModuleConvention
+import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
+    base
+    jacoco
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.spring) apply false
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
     alias(libs.plugins.ktlint) apply false
-    jacoco
 }
 
+val springBootVersion = libs.versions.spring.boot.get()
+
 allprojects {
-    group = "io.dopamine"
-    version = "0.0.1-SNAPSHOT"
+    group = ModuleConvention.GROUP
+    version = ModuleConvention.VERSION
 
     repositories {
         mavenCentral()
     }
 
-    // Java toolchain 설정
     plugins.withType<JavaPlugin> {
         extensions.configure<JavaPluginExtension>("java") {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(21))
+                languageVersion.set(JavaLanguageVersion.of(ModuleConvention.JVM_TARGET))
             }
         }
     }
 
-    // Kotlin 컴파일러 JVM 타겟 설정
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
-    }
-
-    // 테스트 공통 로깅 설정
-    tasks.withType<Test>().configureEach {
-        useJUnitPlatform()
-        testLogging {
-            events("passed", "skipped", "failed")
-            exceptionFormat = TestExceptionFormat.FULL
-            showStandardStreams = true
+            jvmTarget.set(JvmTarget.valueOf("JVM_${ModuleConvention.JVM_TARGET}"))
         }
     }
 }
 
 val ktlintCliVersion = libs.versions.ktlint.cli.get()
-val jacocoExcludes = listOf(
-    "**/Q*",
-    "**/*Config*",
-    "**/dto/**",
-    "**/generated/**",
-    "**/Dummy*",
-    "**/*Kt.class"
-)
-
+val jacocoExcludes = ModuleConvention.jacocoExcludes
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "jacoco")
+    apply(plugin = "io.spring.dependency-management")
 
-    // Ktlint 설정
+    // Apply Spring Boot BOM after dependency-management extension is available
+    afterEvaluate {
+        extensions.configure<DependencyManagementExtension> {
+            imports {
+                mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
+            }
+        }
+    }
+
     configure<KtlintExtension> {
         version.set(ktlintCliVersion)
         android.set(false)
@@ -78,14 +72,22 @@ subprojects {
         }
     }
 
-    // 테스트 후 jacocoTestReport 실행
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+            exceptionFormat = TestExceptionFormat.FULL
+            showStandardStreams = true
+        }
         finalizedBy("jacocoTestReport")
     }
 
+    // Automatically apply configuration processor if Spring Boot is used
+    plugins.withId("org.springframework.boot") {
+        dependencies.add("annotationProcessor", libs.spring.boot.configuration.processor.get())
+    }
+
     afterEvaluate {
-        // 각 모듈에 jacocoTestReport 정의
         tasks.matching { it.name == "jacocoTestReport" }.configureEach {
             this as JacocoReport
 
@@ -112,15 +114,6 @@ subprojects {
             }
         }
 
-        // Spring Boot annotationProcessor 자동 추가
-        if (pluginManager.hasPlugin("org.springframework.boot")) {
-            project.dependencies.add(
-                "annotationProcessor",
-                libs.spring.boot.configuration.processor.get()
-            )
-        }
-
-        // application 플러그인이 없는 경우 bootJar 비활성화
         if (!pluginManager.hasPlugin("application")) {
             tasks.findByName("bootJar")?.enabled = false
             tasks.findByName("jar")?.enabled = true
@@ -128,6 +121,7 @@ subprojects {
     }
 }
 
+// Aggregated Jacoco report across all modules
 tasks.register<JacocoReport>("jacocoRootReport") {
     group = "verification"
     description = "Aggregated Jacoco coverage report across all modules"
@@ -159,5 +153,13 @@ tasks.register<JacocoReport>("jacocoRootReport") {
     reports {
         html.required.set(true)
         xml.required.set(true)
+    }
+}
+
+tasks.named("clean") {
+    doFirst {
+        val orphanBuildDirs = ModuleConvention.allPaths().map { "$it/build" } +
+            listOf("modules/build", "buildSrc/build")
+        delete(orphanBuildDirs.map { file(it) })
     }
 }

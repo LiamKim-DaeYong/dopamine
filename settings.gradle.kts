@@ -1,10 +1,15 @@
 rootProject.name = "dopamine"
 
-include(
-    ":modules:dopamine-core",
-    ":modules:dopamine-demo",
-    ":modules:dopamine-docs",
-    ":modules:dopamine-response",
-    ":modules:dopamine-starter-api",
-    ":modules:dopamine-test-support",
-)
+val moduleGroups = listOf("core", "starter", "response", "support")
+
+moduleGroups.forEach { group ->
+    val groupDir = file("modules/$group")
+    if (groupDir.exists()) {
+        groupDir.listFiles()
+            ?.filter { it.isDirectory && file("${it.path}/build.gradle.kts").exists() }
+            ?.forEach { subModule ->
+                include(":modules:$group:${subModule.name}")
+                project(":modules:$group:${subModule.name}").projectDir = subModule
+            }
+    }
+}
