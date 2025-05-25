@@ -2,7 +2,6 @@ package io.dopamine.response.core.config
 
 import io.dopamine.response.core.format.TimestampFormat
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.http.HttpStatus
 
 /**
  * Configuration properties for Dopamine response behavior.
@@ -62,7 +61,7 @@ data class ResponseProperties(
      * Allows external configuration of response messages and internal codes.
      */
     data class CustomResponseCode(
-        val httpStatus: HttpStatus,
+        val httpStatus: Int,
         val code: String,
         val message: String,
     )

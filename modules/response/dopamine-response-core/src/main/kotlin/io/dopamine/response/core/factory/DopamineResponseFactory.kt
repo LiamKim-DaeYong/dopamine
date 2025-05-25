@@ -1,9 +1,12 @@
 package io.dopamine.response.core.factory
 
+import io.dopamine.core.code.SuccessCode
+import io.dopamine.response.core.code.fromHttpStatus
 import io.dopamine.response.core.config.ResponseProperties
 import io.dopamine.response.core.model.DopamineResponse
 import io.dopamine.response.core.trace.TraceContext
 import io.dopamine.response.core.trace.TraceIdResolver
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -17,6 +20,8 @@ class DopamineResponseFactory(
     private val props: ResponseProperties,
     private val traceIdResolver: TraceIdResolver,
 ) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
     fun <T> success(
         data: T?,
         context: TraceContext,
@@ -86,12 +91,30 @@ class DopamineResponseFactory(
         return meta
     }
 
+    private val customCodeMap: Map<Int, Pair<String, String>> by lazy {
+        props.codes
+            .groupBy { it.httpStatus }
+            .mapValues { entry ->
+                val duplicates = entry.value
+                if (duplicates.size > 1) {
+                    logger.warn(
+                        "[response] Duplicate CustomResponseCode found for HTTP status {}. Using the first one: {}",
+                        entry.key,
+                        duplicates.first(),
+                    )
+                }
+                val first = duplicates.first()
+                first.code to first.message
+            }
+    }
+
     private fun resolveCode(status: HttpStatus): Pair<String, String> {
-        val match = props.codes.firstOrNull { it.httpStatus == status }
-        return if (match != null) {
-            match.code to match.message
-        } else {
-            status.name to status.reasonPhrase
+        customCodeMap[status.value()]?.let { return it }
+
+        SuccessCode.fromHttpStatus(status)?.let {
+            return it.code to it.defaultMessage
         }
+
+        return status.name to status.reasonPhrase
     }
 }
