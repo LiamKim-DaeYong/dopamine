@@ -2,6 +2,7 @@
 kotlin = "2.1.0"
 spring-boot = "3.4.5"
 spring-dependency-management = "1.1.7"
+springdoc = "2.8.8"
 ktlint-plugin = "12.2.0"
 ktlint-cli = "1.5.0"
 kotest = "5.8.1"
@@ -19,6 +20,10 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+
+# SpringDoc
+springdoc-openapi-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+springdoc-openapi-common = { module = "org.springdoc:springdoc-openapi-starter-common", version.ref = "springdoc" }
 
 # Kotest
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }

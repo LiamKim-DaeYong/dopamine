@@ -1,2 +1,2 @@
 io.dopamine.starter.mvc.response.ResponseAutoConfiguration
-io.dopamine.starter.mvc.response.trace.TraceIdResolverConfig
+io.dopamine.starter.mvc.response.TraceIdResolverConfig

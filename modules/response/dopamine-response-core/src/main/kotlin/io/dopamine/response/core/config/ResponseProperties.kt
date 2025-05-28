@@ -10,8 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(ResponsePropertyKeys.PREFIX)
 data class ResponseProperties(
     /**
-     * Whether to enable automatic wrapping with DopamineResponse.
-     * If false, original controller responses will be returned unwrapped.
+     * Whether to enable the Dopamine response module.
      */
     val enabled: Boolean = true,
     /**
