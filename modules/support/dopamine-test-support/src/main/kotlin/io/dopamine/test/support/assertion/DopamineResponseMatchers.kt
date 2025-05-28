@@ -9,7 +9,7 @@ data class ExpectedResponse<T>(
     val message: String,
     val data: T?,
     val traceId: String? = null,
-    val formatter: DateTimeFormatter? = null
+    val formatter: DateTimeFormatter? = null,
 )
 
 infix fun <T> DopamineResponse<T>.shouldBeSuccessWith(expected: ExpectedResponse<T>) {

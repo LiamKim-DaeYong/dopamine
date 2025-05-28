@@ -5,7 +5,7 @@ object ModuleConvention {
     const val VERSION = "0.0.1-SNAPSHOT"
     const val JVM_TARGET = "21"
 
-    val groups = listOf("core", "starter", "response", "support")
+    val groups = listOf("core", "docs", "starter", "response", "support")
 
     val jacocoExcludes = listOf(
         "**/Q*",

@@ -9,9 +9,7 @@ import java.time.ZoneId
 object FixedClock {
     private val zone: ZoneId = ZoneId.systemDefault()
 
-    fun fixed(isoInstant: String): Clock {
-        return Clock.fixed(Instant.parse(isoInstant), zone)
-    }
+    fun fixed(isoInstant: String): Clock = Clock.fixed(Instant.parse(isoInstant), zone)
 
     fun now(clock: Clock = Clock.systemDefaultZone()): Instant = Instant.now(clock)
 

@@ -1,15 +1,15 @@
-package io.dopamine.starter.mvc.response.trace
+package io.dopamine.starter.mvc.response
 
 import io.dopamine.response.core.config.ResponseProperties
 import io.dopamine.response.core.trace.CompositeTraceIdResolver
 import io.dopamine.response.core.trace.HeaderTraceIdResolver
 import io.dopamine.response.core.trace.TraceIdResolver
 import io.dopamine.response.mvc.trace.MdcTraceIdResolver
+import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 
-@Configuration
+@AutoConfiguration
 class TraceIdResolverConfig {
     @Bean
     fun headerTraceIdResolver(props: ResponseProperties): HeaderTraceIdResolver =
