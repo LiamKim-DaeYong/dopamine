@@ -41,14 +41,6 @@ data class ResponseProperties(
          */
         val includeTraceId: Boolean = true,
         /**
-         * The key name to use for traceId in the response (e.g., "traceId", "X-Trace-ID").
-         */
-        val traceIdKey: String = "traceId",
-        /**
-         * The request header name from which to extract the traceId.
-         */
-        val traceIdHeader: String = "X-Trace-ID",
-        /**
          * Whether to include paging information in the "meta" field.
          * Automatically extracted if the response contains Page<T> or similar.
          */

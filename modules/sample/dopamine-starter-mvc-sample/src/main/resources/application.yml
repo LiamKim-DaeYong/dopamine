@@ -1,0 +1,13 @@
+dopamine:
+  response:
+    enabled: true
+    include-meta: true
+    meta-options:
+      include-trace-id: true
+
+  docs:
+    enabled: true
+
+  trace:
+    trace-id-header: X-Trace-ID
+    trace-id-key: traceId

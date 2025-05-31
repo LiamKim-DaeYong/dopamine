@@ -6,6 +6,7 @@ import io.dopamine.response.core.config.ResponsePropertyKeys
 import io.dopamine.response.core.factory.DopamineResponseFactory
 import io.dopamine.response.mvc.advice.DopamineResponseAdvice
 import io.dopamine.trace.core.resolver.TraceIdResolver
+import io.dopamine.trace.mvc.config.TraceProperties
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
@@ -28,8 +29,9 @@ class ResponseAutoConfiguration {
     @Bean
     fun dopamineResponseAdvice(
         factory: DopamineResponseFactory,
+        traceIdResolver: TraceIdResolver,
+        traceProperties: TraceProperties,
         objectMapper: ObjectMapper,
         request: HttpServletRequest,
-        traceIdResolver: TraceIdResolver,
-    ): DopamineResponseAdvice = DopamineResponseAdvice(factory, traceIdResolver, objectMapper, request)
+    ): DopamineResponseAdvice = DopamineResponseAdvice(factory, traceIdResolver, traceProperties, objectMapper, request)
 }
