@@ -3,7 +3,8 @@ package io.dopamine.response.mvc.advice
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.dopamine.response.core.factory.DopamineResponseFactory
 import io.dopamine.response.core.model.DopamineResponse
-import io.dopamine.response.mvc.trace.ServletTraceContext
+import io.dopamine.trace.core.resolver.TraceIdResolver
+import io.dopamine.trace.mvc.request.ServletTraceContext
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
 import org.springframework.http.MediaType
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
 @ControllerAdvice
 class DopamineResponseAdvice(
     private val factory: DopamineResponseFactory,
+    private val traceIdResolver: TraceIdResolver,
     private val objectMapper: ObjectMapper,
     private val request: HttpServletRequest,
 ) : ResponseBodyAdvice<Any> {
@@ -51,9 +53,10 @@ class DopamineResponseAdvice(
 
         // Build context
         val context = ServletTraceContext(request)
+        val traceId = traceIdResolver.resolve(context)
 
         // Wrap
-        val wrapped = factory.success(body, context)
+        val wrapped = factory.success(body, traceId)
 
         // Handle String return type
         return if (returnType.parameterType == String::class.java) {

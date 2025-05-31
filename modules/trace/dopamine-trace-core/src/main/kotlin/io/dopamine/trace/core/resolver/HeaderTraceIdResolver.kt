@@ -1,4 +1,6 @@
-package io.dopamine.response.core.trace
+package io.dopamine.trace.core.resolver
+
+import io.dopamine.trace.core.request.RequestTraceContext
 
 /**
  * TraceIdResolver that extracts traceId from the request header via TraceContext.
@@ -11,5 +13,6 @@ class HeaderTraceIdResolver(
         require(headerName.isNotBlank()) { "headerName must not be blank" }
     }
 
-    override fun resolve(context: TraceContext): String? = context.getHeader(headerName)?.takeIf { it.isNotBlank() }
+    override fun resolve(context: RequestTraceContext): String? =
+        context.getHeader(headerName)?.takeIf { it.isNotBlank() }
 }

@@ -1,6 +1,13 @@
 rootProject.name = "dopamine"
 
-val moduleGroups = listOf("core", "docs", "starter", "response", "support")
+val moduleGroups = listOf(
+    "core",
+    "docs",
+    "response",
+    "starter",
+    "support",
+    "trace"
+)
 
 moduleGroups.forEach { group ->
     val groupDir = file("modules/$group")
