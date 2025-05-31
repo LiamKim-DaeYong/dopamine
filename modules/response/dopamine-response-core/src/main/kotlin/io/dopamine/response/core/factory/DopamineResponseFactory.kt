@@ -23,10 +23,9 @@ class DopamineResponseFactory(
 
     fun <T> success(
         data: T?,
-        traceId: String? = null,
+        meta: Map<String, Any>? = null,
     ): DopamineResponse<T> {
         val timestamp = formatTimestamp()
-        val meta = if (props.includeMeta) buildMeta(traceId) else null
         val (code, message) = resolveCode(HttpStatus.OK)
 
         return DopamineResponse(
@@ -41,13 +40,11 @@ class DopamineResponseFactory(
     fun <T> of(
         data: T?,
         status: HttpStatus,
-        traceId: String? = null,
+        meta: Map<String, Any>? = null,
         customCode: String? = null,
         customMessage: String? = null,
-        existingMeta: Map<String, Any>? = null,
     ): DopamineResponse<T> {
         val timestamp = formatTimestamp()
-        val meta = if (props.includeMeta) mergeMeta(existingMeta, traceId) else existingMeta
         val (code, message) =
             if (customCode != null && customMessage != null) {
                 customCode to customMessage
@@ -60,32 +57,11 @@ class DopamineResponseFactory(
             message = message,
             data = data,
             timestamp = timestamp,
-            meta = meta,
+            meta = if (props.includeMeta) meta else null,
         )
     }
 
     private fun formatTimestamp(): String = LocalDateTime.now().format(props.timestampFormat.formatter())
-
-    private fun buildMeta(traceId: String?): Map<String, Any> {
-        val meta = mutableMapOf<String, Any>()
-
-        if (props.metaOptions.includeTraceId && !traceId.isNullOrBlank()) {
-            val key = props.metaOptions.traceIdKey
-            meta[key] = traceId
-        }
-
-        // future: paging, userId, etc.
-        return meta
-    }
-
-    private fun mergeMeta(
-        existing: Map<String, Any>?,
-        traceId: String?,
-    ): Map<String, Any> {
-        val meta = buildMeta(traceId).toMutableMap()
-        existing?.forEach { (k, v) -> meta.putIfAbsent(k, v) }
-        return meta
-    }
 
     private val customCodeMap: Map<Int, Pair<String, String>> by lazy {
         props.codes

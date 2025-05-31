@@ -10,8 +10,6 @@ object ResponsePropertyKeys {
         const val META_PREFIX = "$PREFIX.meta-options"
 
         const val INCLUDE_TRACE_ID = "$META_PREFIX.include-trace-id"
-        const val TRACE_ID_KEY = "$META_PREFIX.trace-id-key"
-        const val TRACE_ID_HEADER = "$META_PREFIX.trace-id-header"
         const val INCLUDE_PAGING = "$META_PREFIX.include-paging"
     }
 }
