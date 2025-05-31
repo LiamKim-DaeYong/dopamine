@@ -13,5 +13,6 @@ class HeaderTraceIdResolver(
         require(headerName.isNotBlank()) { "headerName must not be blank" }
     }
 
-    override fun resolve(context: RequestTraceContext): String? = context.getHeader(headerName)?.takeIf { it.isNotBlank() }
+    override fun resolve(context: RequestTraceContext): String? =
+        context.getHeader(headerName)?.takeIf { it.isNotBlank() }
 }

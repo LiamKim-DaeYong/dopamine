@@ -7,6 +7,8 @@ package io.dopamine.trace.core.store
  */
 interface TraceIdStore {
     fun getCurrentTraceId(): String?
+
     fun setCurrentTraceId(traceId: String)
+
     fun clear()
 }
