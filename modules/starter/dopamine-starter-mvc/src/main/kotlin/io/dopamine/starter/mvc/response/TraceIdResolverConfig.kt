@@ -12,17 +12,10 @@ import org.springframework.context.annotation.Bean
 @AutoConfiguration
 class TraceIdResolverConfig {
     @Bean
-    fun headerTraceIdResolver(props: ResponseProperties): HeaderTraceIdResolver =
-        HeaderTraceIdResolver(props.metaOptions.traceIdHeader)
-
-    @Bean
-    fun mdcTraceIdResolver(props: ResponseProperties): MdcTraceIdResolver =
-        MdcTraceIdResolver(props.metaOptions.traceIdKey)
-
-    @Bean
-    @ConditionalOnMissingBean
-    fun traceIdResolver(
-        header: HeaderTraceIdResolver,
-        mdc: MdcTraceIdResolver,
-    ): TraceIdResolver = CompositeTraceIdResolver(listOf(header, mdc))
+    @ConditionalOnMissingBean(TraceIdResolver::class)
+    fun traceIdResolver(props: ResponseProperties): TraceIdResolver {
+        val header = HeaderTraceIdResolver(props.metaOptions.traceIdHeader)
+        val mdc = MdcTraceIdResolver(props.metaOptions.traceIdKey)
+        return CompositeTraceIdResolver(listOf(header, mdc))
+    }
 }
