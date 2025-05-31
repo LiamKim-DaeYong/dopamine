@@ -1,4 +1,4 @@
-package io.dopamine.trace.core
+package io.dopamine.trace.core.generator
 
 import java.util.UUID
 
