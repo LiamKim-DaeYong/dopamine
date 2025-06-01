@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.dopamine.response.core.config.ResponseProperties
 import io.dopamine.response.core.config.ResponsePropertyKeys
 import io.dopamine.response.core.factory.DopamineResponseFactory
+import io.dopamine.response.mvc.advice.DopamineErrorResponseAdvice
 import io.dopamine.response.mvc.advice.DopamineResponseAdvice
+import io.dopamine.response.mvc.meta.ResponseMetaBuilder
 import io.dopamine.trace.core.resolver.TraceIdResolver
 import io.dopamine.trace.mvc.config.TraceProperties
 import jakarta.servlet.http.HttpServletRequest
@@ -27,11 +29,22 @@ class ResponseAutoConfiguration {
     fun dopamineResponseFactory(props: ResponseProperties): DopamineResponseFactory = DopamineResponseFactory(props)
 
     @Bean
-    fun dopamineResponseAdvice(
-        factory: DopamineResponseFactory,
+    fun responseMetaBuilder(
         traceIdResolver: TraceIdResolver,
         traceProperties: TraceProperties,
-        objectMapper: ObjectMapper,
         request: HttpServletRequest,
-    ): DopamineResponseAdvice = DopamineResponseAdvice(factory, traceIdResolver, traceProperties, objectMapper, request)
+    ): ResponseMetaBuilder = ResponseMetaBuilder(traceIdResolver, traceProperties, request)
+
+    @Bean
+    fun dopamineResponseAdvice(
+        factory: DopamineResponseFactory,
+        objectMapper: ObjectMapper,
+        metaBuilder: ResponseMetaBuilder,
+    ): DopamineResponseAdvice = DopamineResponseAdvice(factory, objectMapper, metaBuilder)
+
+    @Bean
+    fun dopamineErrorResponseAdvice(
+        factory: DopamineResponseFactory,
+        metaBuilder: ResponseMetaBuilder,
+    ): DopamineErrorResponseAdvice = DopamineErrorResponseAdvice(factory, metaBuilder)
 }

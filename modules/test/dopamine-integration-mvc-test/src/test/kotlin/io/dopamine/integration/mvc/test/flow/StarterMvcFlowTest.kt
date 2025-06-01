@@ -28,15 +28,16 @@ class StarterMvcFlowTest(
             }
         }
 
-//    Given("an HTTP request that throws an exception") {
-//        Then("the response should be wrapped and include meta.traceId with null data") {
-//            mockMvc.get("/test/error") {
-//                accept = MediaType.APPLICATION_JSON
-//            }.andExpect {
-//                status { is4xxClientError() }
-//                jsonPath("$.meta.traceId").exists()
-//                jsonPath("$.data").doesNotExist()
-//            }
-//        }
-//    }
+        Given("an HTTP request that throws an exception") {
+            Then("the response should be wrapped and include meta.traceId with null data") {
+                mockMvc
+                    .get("/test/error") {
+                        accept = MediaType.APPLICATION_JSON
+                    }.andExpect {
+                        status { is5xxServerError() }
+                        jsonPath("$.meta.traceId").exists()
+                        jsonPath("$.data").doesNotExist()
+                    }
+            }
+        }
     })
