@@ -1,10 +1,10 @@
 package io.dopamine.test.support.trace
 
-import io.dopamine.response.core.trace.TraceContext
+import io.dopamine.trace.core.request.RequestTraceContext
 
 object TraceContextFixtures {
     fun dummy() =
-        object : TraceContext {
+        object : RequestTraceContext {
             override fun getHeader(name: String): String? = null
 
             override fun getAttribute(name: String): String? = null
