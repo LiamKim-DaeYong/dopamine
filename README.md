@@ -107,4 +107,4 @@ MIT License
 ## 🙋‍♂️ Maintainer
 
 * DY (a.k.a 디와이.log)
-* 기술 블로그: [https://dylog.dev](https://dylog.dev) *(예정)*
+* 기술 블로그: [https://velog.io/@dylog/posts](https://velog.io/@dylog/posts) *(예정)*
