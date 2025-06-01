@@ -6,7 +6,7 @@ val moduleGroups = listOf(
     "response",
     "sample",
     "starter",
-    "support",
+    "test",
     "trace"
 )
 

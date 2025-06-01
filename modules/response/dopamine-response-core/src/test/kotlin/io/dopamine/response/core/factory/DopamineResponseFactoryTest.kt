@@ -5,11 +5,9 @@ import io.dopamine.response.core.config.ResponseProperties
 import io.dopamine.response.core.config.ResponseProperties.CustomResponseCode
 import io.dopamine.response.core.format.TimestampFormat
 import io.dopamine.response.core.model.DopamineResponse
-import io.dopamine.response.core.trace.TraceContext
 import io.dopamine.test.support.assertion.ExpectedResponse
 import io.dopamine.test.support.assertion.shouldBeSuccessWith
 import io.dopamine.test.support.factory.DopamineResponseFactoryFixtures
-import io.dopamine.test.support.trace.TraceContextFixtures
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.http.HttpStatus
@@ -22,7 +20,6 @@ class DopamineResponseFactoryTest :
         val formatter: DateTimeFormatter = TimestampFormat.ISO_8601.formatter()
 
         lateinit var factory: DopamineResponseFactory
-        lateinit var context: TraceContext
 
         beforeTest {
             factory =
@@ -32,15 +29,13 @@ class DopamineResponseFactoryTest :
                             includeMeta = true,
                             timestampFormat = TimestampFormat.ISO_8601,
                         ),
-                    traceId = defaultTraceId,
                 )
-            context = TraceContextFixtures.dummy()
         }
 
         context("success(...)") {
 
             test("should include traceId and timestamp when called with default settings") {
-                val response: DopamineResponse<String> = factory.success("hello", context)
+                val response: DopamineResponse<String> = factory.success("hello", mapOf("traceId" to defaultTraceId))
 
                 response shouldBeSuccessWith
                     ExpectedResponse(
@@ -63,12 +58,9 @@ class DopamineResponseFactoryTest :
                             ),
                     )
                 val factory =
-                    DopamineResponseFactoryFixtures.dummy(
-                        props = props,
-                        traceId = defaultTraceId,
-                    )
+                    DopamineResponseFactoryFixtures.dummy(props = props)
 
-                val response = factory.success("hello", context)
+                val response = factory.success("hello", mapOf("traceId" to defaultTraceId))
 
                 response shouldBeSuccessWith
                     ExpectedResponse(
@@ -84,10 +76,9 @@ class DopamineResponseFactoryTest :
                 val factory =
                     DopamineResponseFactoryFixtures.dummy(
                         props = ResponseProperties(includeMeta = false),
-                        traceId = defaultTraceId,
                     )
 
-                val response = factory.success("data", context)
+                val response = factory.success("data", null)
 
                 response.meta shouldBe null
             }
@@ -100,7 +91,7 @@ class DopamineResponseFactoryTest :
                     factory.of(
                         data = "default case",
                         status = HttpStatus.CREATED,
-                        context = context,
+                        meta = mapOf("traceId" to defaultTraceId),
                     )
 
                 response shouldBeSuccessWith

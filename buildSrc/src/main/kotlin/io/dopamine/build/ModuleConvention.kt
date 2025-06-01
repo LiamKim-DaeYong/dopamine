@@ -11,7 +11,7 @@ object ModuleConvention {
         "response",
         "sample",
         "starter",
-        "support",
+        "test",
         "trace"
     )
 
