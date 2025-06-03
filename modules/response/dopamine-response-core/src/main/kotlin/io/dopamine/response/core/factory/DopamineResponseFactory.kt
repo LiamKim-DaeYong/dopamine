@@ -14,7 +14,6 @@ import java.time.LocalDateTime
  * Formatting, timestamp generation, and response code mapping are handled here.
  * Optional traceId or meta can be injected externally.
  */
-
 @Component
 class DopamineResponseFactory(
     private val props: ResponseProperties,

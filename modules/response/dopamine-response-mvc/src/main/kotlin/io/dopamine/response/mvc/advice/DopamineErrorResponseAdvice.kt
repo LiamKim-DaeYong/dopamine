@@ -20,6 +20,7 @@ class DopamineErrorResponseAdvice(
     @ExceptionHandler(DopamineException::class)
     fun handleDopamineException(e: DopamineException): ResponseEntity<DopamineResponse<Nothing>> {
         val meta = metaBuilder.build()
+
         val response =
             factory.of(
                 data = null,
