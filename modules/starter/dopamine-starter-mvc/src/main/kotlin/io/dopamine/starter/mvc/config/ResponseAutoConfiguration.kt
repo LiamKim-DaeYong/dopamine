@@ -1,6 +1,7 @@
-package io.dopamine.starter.mvc.response
+package io.dopamine.starter.mvc.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.dopamine.i18n.resolver.MessageResolver
 import io.dopamine.response.core.config.ResponseProperties
 import io.dopamine.response.core.config.ResponsePropertyKeys
 import io.dopamine.response.core.factory.DopamineResponseFactory
@@ -26,7 +27,10 @@ import org.springframework.context.annotation.Bean
 @EnableConfigurationProperties(ResponseProperties::class)
 class ResponseAutoConfiguration {
     @Bean
-    fun dopamineResponseFactory(props: ResponseProperties): DopamineResponseFactory = DopamineResponseFactory(props)
+    fun dopamineResponseFactory(
+        props: ResponseProperties,
+        messageResolver: MessageResolver,
+    ): DopamineResponseFactory = DopamineResponseFactory(props, messageResolver)
 
     @Bean
     fun responseMetaBuilder(

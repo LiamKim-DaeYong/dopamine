@@ -9,10 +9,10 @@ import java.util.Locale
  * If a message cannot be resolved, the key itself is returned as a fallback.
  */
 class SpringMessageResolver(
-    private val messageSource: MessageSource
+    private val messageSource: MessageSource,
 ) : MessageResolver {
-
-    override fun resolve(key: String, locale: Locale): String {
-        return messageSource.getMessage(key, null, null, locale) ?: key
-    }
+    override fun resolve(
+        key: String,
+        locale: Locale,
+    ): String = messageSource.getMessage(key, null, null, locale) ?: key
 }

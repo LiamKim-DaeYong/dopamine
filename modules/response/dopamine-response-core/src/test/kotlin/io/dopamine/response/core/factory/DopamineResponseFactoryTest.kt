@@ -1,8 +1,8 @@
 package io.dopamine.response.core.factory
 
 import io.dopamine.core.code.SuccessCode
+import io.dopamine.response.core.config.CustomResponseCode
 import io.dopamine.response.core.config.ResponseProperties
-import io.dopamine.response.core.config.ResponseProperties.CustomResponseCode
 import io.dopamine.response.core.format.TimestampFormat
 import io.dopamine.response.core.model.DopamineResponse
 import io.dopamine.test.support.assertion.ExpectedResponse

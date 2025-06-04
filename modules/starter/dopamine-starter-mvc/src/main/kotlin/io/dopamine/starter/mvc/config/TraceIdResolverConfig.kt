@@ -1,4 +1,4 @@
-package io.dopamine.starter.mvc.response
+package io.dopamine.starter.mvc.config
 
 import io.dopamine.trace.core.resolver.CompositeTraceIdResolver
 import io.dopamine.trace.core.resolver.HeaderTraceIdResolver

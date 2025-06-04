@@ -9,9 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(I18nPropertyKeys.PREFIX)
 data class I18nProperties(
     /**
-     * Base path of message bundles (e.g. "classpath:/messages").
+     * List of base paths for message bundles (e.g. classpath:/messages, classpath:/dopamine/messages)
      */
-    var basename: String = "classpath:/messages",
+    var basenames: List<String> = listOf("classpath:/messages"),
     /**
      * Default locale to use if none is specified (e.g. "en", "ko").
      */

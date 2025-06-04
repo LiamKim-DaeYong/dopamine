@@ -13,21 +13,18 @@ import java.util.Locale
 @Configuration
 @EnableConfigurationProperties(I18nProperties::class)
 class I18nAutoConfiguration {
-
     @Bean
     @ConditionalOnMissingBean(MessageSource::class)
-    fun messageSource(props: I18nProperties): MessageSource {
-        return ReloadableResourceBundleMessageSource().apply {
-            setBasename(props.basename)
+    fun messageSource(props: I18nProperties): MessageSource =
+        ReloadableResourceBundleMessageSource().apply {
+            val finalBaseNameList = props.basenames + "classpath:/dopamine/messages"
+            setBasenames(*finalBaseNameList.toTypedArray())
             setDefaultEncoding(props.encoding)
             setFallbackToSystemLocale(props.fallbackToSystemLocale)
             setDefaultLocale(Locale.forLanguageTag(props.defaultLocale))
         }
-    }
 
     @Bean
     @ConditionalOnMissingBean(MessageResolver::class)
-    fun messageResolver(messageSource: MessageSource): MessageResolver {
-        return SpringMessageResolver(messageSource)
-    }
+    fun messageResolver(messageSource: MessageSource): MessageResolver = SpringMessageResolver(messageSource)
 }

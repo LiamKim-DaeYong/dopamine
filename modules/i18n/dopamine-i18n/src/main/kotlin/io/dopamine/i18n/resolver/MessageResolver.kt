@@ -8,5 +8,8 @@ import java.util.Locale
  * Typically used to retrieve i18n messages from resource bundles.
  */
 fun interface MessageResolver {
-    fun resolve(key: String, locale: Locale): String
+    fun resolve(
+        key: String,
+        locale: Locale,
+    ): String
 }

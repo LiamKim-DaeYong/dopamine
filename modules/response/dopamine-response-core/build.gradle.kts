@@ -6,8 +6,10 @@ plugins {
 }
 
 dependencies {
+    api(project(":modules:i18n:dopamine-i18n"))
     implementation(project(":modules:core:dopamine-core"))
     implementation(libs.spring.boot.starter.web)
+    implementation(libs.kotlin.reflect)
 
     testImplementation(project(":modules:test:dopamine-test-support"))
     testImplementation(libs.kotest.runner.junit5)
