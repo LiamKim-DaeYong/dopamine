@@ -1,9 +1,8 @@
-package io.dopamine.trace.mvc
+package io.dopamine.trace.mvc.config
 
 import io.dopamine.trace.core.generator.TraceIdGenerator
 import io.dopamine.trace.core.generator.UuidTraceIdGenerator
 import io.dopamine.trace.core.store.TraceIdStore
-import io.dopamine.trace.mvc.config.TraceProperties
 import io.dopamine.trace.mvc.filter.TraceIdFilter
 import io.dopamine.trace.mvc.store.MdcTraceIdStore
 import org.springframework.boot.autoconfigure.AutoConfiguration
@@ -18,9 +17,9 @@ import org.springframework.web.filter.OncePerRequestFilter
  * Autoconfiguration for traceId generation and storage in servlet-based environments.
  *
  * Registers:
- * - [TraceIdGenerator]: generates a unique traceId for each request
- * - [TraceIdStore]: stores the traceId in MDC
- * - [TraceIdFilter]: servlet filter that manages the traceId lifecycle
+ * - [io.dopamine.trace.core.generator.TraceIdGenerator]: generates a unique traceId for each request
+ * - [io.dopamine.trace.core.store.TraceIdStore]: stores the traceId in MDC
+ * - [io.dopamine.trace.mvc.filter.TraceIdFilter]: servlet filter that manages the traceId lifecycle
  *
  * Configuration is bound to the `dopamine.trace` prefix via [TraceProperties].
  */

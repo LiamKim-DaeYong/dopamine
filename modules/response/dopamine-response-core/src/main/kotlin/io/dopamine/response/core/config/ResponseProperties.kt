@@ -46,14 +46,4 @@ data class ResponseProperties(
          */
         val includePaging: Boolean = true,
     )
-
-    /**
-     * Custom response code structure mapped by HTTP status.
-     * Allows external configuration of response messages and internal codes.
-     */
-    data class CustomResponseCode(
-        val httpStatus: Int,
-        val code: String,
-        val message: String,
-    )
 }

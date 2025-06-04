@@ -9,8 +9,9 @@ package io.dopamine.response.core.exception
  * It is used to generate standardized API error responses and supports
  * external message resolution (e.g., via message source or configuration).
  */
-open class DopamineException(
+class DopamineException(
     val code: String,
+    val messageKey: String? = null,
     override val message: String,
     override val cause: Throwable? = null,
 ) : RuntimeException(message, cause)

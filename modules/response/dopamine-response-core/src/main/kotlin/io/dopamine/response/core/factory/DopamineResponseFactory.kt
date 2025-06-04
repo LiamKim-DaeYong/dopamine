@@ -1,23 +1,26 @@
 package io.dopamine.response.core.factory
 
 import io.dopamine.core.code.SuccessCode
+import io.dopamine.i18n.resolver.MessageResolver
 import io.dopamine.response.core.code.fromHttpStatus
+import io.dopamine.response.core.config.CustomResponseCode
 import io.dopamine.response.core.config.ResponseProperties
 import io.dopamine.response.core.model.DopamineResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import java.util.Locale
 
 /**
  * Factory responsible for constructing standardized DopamineResponse<T> instances.
  * Formatting, timestamp generation, and response code mapping are handled here.
  * Optional traceId or meta can be injected externally.
  */
-
 @Component
 class DopamineResponseFactory(
     private val props: ResponseProperties,
+    private val messageResolver: MessageResolver,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -63,7 +66,7 @@ class DopamineResponseFactory(
 
     private fun formatTimestamp(): String = LocalDateTime.now().format(props.timestampFormat.formatter())
 
-    private val customCodeMap: Map<Int, Pair<String, String>> by lazy {
+    private val customCodeMap: Map<Int, CustomResponseCode> by lazy {
         props.codes
             .groupBy { it.httpStatus }
             .mapValues { entry ->
@@ -75,16 +78,36 @@ class DopamineResponseFactory(
                         duplicates.first(),
                     )
                 }
-                val first = duplicates.first()
-                first.code to first.message
+                duplicates.first()
             }
     }
 
-    private fun resolveCode(status: HttpStatus): Pair<String, String> {
-        customCodeMap[status.value()]?.let { return it }
+    private fun resolveCode(
+        status: HttpStatus,
+        locale: Locale = Locale.getDefault(),
+    ): Pair<String, String> {
+        customCodeMap[status.value()]?.let { config ->
+            val message =
+                config.messageKey?.let { key ->
+                    val resolved = messageResolver.resolve(key, locale)
+                    if (resolved != key) resolved else null
+                } ?: config.message
+
+            val finalMessage =
+                message
+                    ?: SuccessCode.fromHttpStatusCode(status.value())?.let {
+                        val resolved = messageResolver.resolve(it.messageKey, locale)
+                        if (resolved != it.messageKey) resolved else it.defaultMessage
+                    }
+                    ?: status.reasonPhrase
+
+            return config.code to finalMessage
+        }
 
         SuccessCode.fromHttpStatus(status)?.let {
-            return it.code to it.defaultMessage
+            val resolved = messageResolver.resolve(it.messageKey, locale)
+            val message = if (resolved != it.messageKey) resolved else it.defaultMessage
+            return it.code to message
         }
 
         return status.name to status.reasonPhrase

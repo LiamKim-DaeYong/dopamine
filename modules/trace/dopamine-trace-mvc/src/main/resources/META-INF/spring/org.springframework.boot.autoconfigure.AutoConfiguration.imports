@@ -1,1 +1,1 @@
-io.dopamine.trace.mvc.TraceIdMvcAutoConfiguration
+io.dopamine.trace.mvc.config.TraceIdMvcAutoConfiguration
