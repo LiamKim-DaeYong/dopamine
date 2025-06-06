@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.dopamine.response.core.factory.DopamineResponseFactory
 import io.dopamine.response.core.model.DopamineResponse
 import io.dopamine.response.mvc.meta.ResponseMetaBuilder
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -13,6 +14,8 @@ import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.server.ServerHttpRequest
 import org.springframework.http.server.ServerHttpResponse
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
 
 /**
@@ -30,6 +33,9 @@ class DopamineResponseAdvice(
         returnType: MethodParameter,
         converterType: Class<out HttpMessageConverter<*>>,
     ): Boolean {
+        val request = (RequestContextHolder.getRequestAttributes() as? ServletRequestAttributes)?.request
+        if (request != null && isSwaggerRequest(request)) return false
+
         val clazz = returnType.parameterType
         return !DopamineResponse::class.java.isAssignableFrom(clazz) &&
             !ResponseEntity::class.java.isAssignableFrom(clazz) &&
@@ -68,5 +74,14 @@ class DopamineResponseAdvice(
     private fun isReactive(body: Any?): Boolean {
         val className = body?.javaClass?.name ?: return false
         return className.startsWith("reactor.core.publisher.")
+    }
+
+    private fun isSwaggerRequest(request: HttpServletRequest): Boolean {
+        val acceptHeader = request.getHeader("Accept") ?: ""
+        val uri = request.requestURI
+
+        return acceptHeader.contains("application/vnd.springdoc+json")
+            || uri.startsWith("/swagger-ui")
+            || uri.startsWith("/v3/api-docs")
     }
 }

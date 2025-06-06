@@ -1,30 +1,30 @@
 package io.dopamine.docs.config
 
 object DocsPropertyKeys {
-    const val PREFIX = "dopamine.docs"
 
-    const val ENABLED = "$PREFIX.enabled"
+    const val PREFIX = "dopamine.docs"
+    const val ENABLED = "enabled"
 
     object Swagger {
-        const val SWAGGER_PREFIX = "$PREFIX.swagger."
+        const val PREFIX = "${DocsPropertyKeys.PREFIX}.swagger"
 
-        const val ENABLED = "$SWAGGER_PREFIX.enabled"
-        const val TITLE = "$SWAGGER_PREFIX.title"
-        const val VERSION = "$SWAGGER_PREFIX.version"
-        const val DESCRIPTION = "$SWAGGER_PREFIX.description"
-        const val BASE_PACKAGE = "$SWAGGER_PREFIX.base-package"
+        const val TITLE = "title"
+        const val VERSION = "version"
+        const val DESCRIPTION = "description"
+        const val BASE_PACKAGE = "base-package"
+
+        const val DEFAULT_GROUP_NAME = "dopamine"
+        const val DEFAULT_BASE_PACKAGE = "io.dopamine"
     }
 
     object Static {
-        const val STATIC_PREFIX = "$PREFIX.static"
-
-        const val ENABLED = "$STATIC_PREFIX.enabled"
-        const val PATH = "$STATIC_PREFIX.path"
+        const val PREFIX = "${DocsPropertyKeys.PREFIX}.static"
+        const val PATH = "path"
     }
 
     object Admin {
-        const val ADMIN_PREFIX = "$PREFIX.admin"
-
-        const val ENABLED = "$ADMIN_PREFIX.enabled"
+        const val PREFIX = "${DocsPropertyKeys.PREFIX}.admin"
+        const val ENABLED = "enabled"
+        const val ENABLED_KEY = "$PREFIX.$ENABLED"
     }
 }
