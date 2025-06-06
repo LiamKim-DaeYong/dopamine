@@ -1,13 +1,10 @@
-# Dopamine
+# 🚀 Dopamine
 
-> 🚧 **This project is a work in progress.**
-> 기능은 순차적으로 개발 중이며, 구조와 내용은 변경될 수 있습니다.
+**Dopamine**은 반복적인 설정과 구조 작업을 줄이고,  
+**개발자가 더 중요한 문제 해결에 집중할 수 있도록 설계된 공통 인프라 프레임워크**입니다.
 
-**Dopamine**은 반복적인 개발 업무를 줄이고, 개발자에게 다시 동기부여와 의욕을 불어넣을 수 있는 **Spring Boot 스타터킷 기반 프레임워크**입니다.
-
-이 프로젝트는 번아웃이 찾아오던 시기에, 스스로에게 다시 에너지를 줄 수 있는 무언가를 만들고 싶다는 마음에서 출발했습니다. 그리고 이 프레임워크를 사용하는 개발자들도 **반복적인 작업에서 벗어나 더 중요한 일에 집중하며 동기를 되찾을 수 있기를** 바라는 마음이 담겨 있습니다.
-
-현재는 핵심 기능 개발 단계이며, 향후에는 상용 서비스에서도 적용 가능한 품질과 유연성을 갖춘 구조로 발전시키는 것을 지향합니다.
+번아웃을 겪던 시기에 다시 개발에 집중하고 싶은 마음으로 시작했고,  
+같은 고민을 겪는 개발자들에게도 도움이 되기를 기대합니다.
 
 ---
 
@@ -20,48 +17,27 @@
 
 ---
 
-## ⚙️ 기술 스택
+## 🎯 Features
 
-* **Spring Boot 3.x**
-* **Kotlin** + **Gradle (Kotlin DSL)**
-* **Kotest** 기반 테스트 통일
-
----
-
-## 🧩 주요 모듈 구성
-
-현재 개발 중인 주요 모듈과 그 역할은 다음과 같습니다:
-
-| 모듈              | 설명                                       |
-| --------------- | ---------------------------------------- |
-| `trace-core`    | traceId 생성 및 저장에 대한 추상화 구성               |
-| `trace-mvc`     | MDC 기반 traceId 저장 및 추출 필터 구성             |
-| `response-core` | `DopamineResponse<T>` 포맷 정의 및 meta 구조 제공 |
-| `response-mvc`  | 컨트롤러 응답 자동 래핑 및 예외 처리 Advice 구성          |
-| `starter-mvc`   | response + trace 조합 자동 설정 구성             |
-| `sample`        | 실제 연동 흐름을 검증하는 샘플 애플리케이션                 |
+✔️ 공통 응답 포맷 자동 래핑 (`DopamineResponse<T>`)  
+✔️ traceId 자동 생성 및 응답/로그 포함  
+✔️ 예외 자동 포맷 처리 (비즈니스 & 시스템 오류 구분)  
+✔️ 국제화(i18n) 메시지 바인딩 지원  
+✔️ Kotlin + Gradle (KTS) + Kotest 기반 테스트 환경  
+✔️ 설정 기반 조건부 기능 비활성화 가능
 
 ---
 
-## 🧪 테스트 전략
+## 🧩 모듈 구성
 
-Dopamine은 설정 바인딩, 자동 응답 래핑, traceId 포함 여부 등 다양한 항목에 대해 유닛/통합 테스트를 제공합니다.
-
-| 항목             | 방식     | 설명                                             |
-| -------------- | ------ | ---------------------------------------------- |
-| 응답 구조 유닛 테스트   | ✅      | `DopamineResponse` 직렬화가 정상적으로 동작하는지 확인         |
-| 자동 응답 래핑 적용 여부 | ✅ (통합) | 컨트롤러 응답이 자동으로 래핑되는지 통합 테스트로 검증                 |
-| traceId 포함 여부  | ✅ (통합) | meta.traceId가 응답에 포함되는지 확인                     |
-| 설정 바인딩 테스트     | ✅      | `ResponseProperties`가 Spring 설정으로 정상 바인딩되는지 검증 |
-| 조건부 빈 등록 테스트   | ✅      | `enabled=false` 설정 시 관련 Bean이 등록되지 않는지 검증      |
-
----
-
-## 🏗️ 향후 개발 계획
-
-* `dopamine-auth`: JWT / 세션 기반 인증 및 인가 기능
-* `dopamine-admin`: 설정 정보 및 관리용 인터페이스 제공
-* 파일 처리, 알림, 캐시, 배치 등 실무에서 자주 쓰이는 기능 모듈 순차 개발 예정
+| 모듈              | 역할 설명 |
+|-------------------|-----------|
+| `trace-core`      | traceId 생성 및 추상화 구성 |
+| `trace-mvc`       | MDC 기반 traceId 필터 구성 |
+| `response-core`   | 공통 응답 포맷 정의 및 meta 구조 |
+| `response-mvc`    | 자동 응답/예외 래핑 Advice 구성 |
+| `starter-mvc`     | 위 모듈 통합 자동 구성 |
+| `sample`          | 기능 통합 샘플 애플리케이션 |
 
 ---
 
@@ -96,15 +72,30 @@ GET http://localhost:8080/sample/dto
 }
 ```
 
+## 🛠️ 향후 개발 예정
+- dopamine-auth: JWT / 세션 기반 인증
+- dopamine-docs: Swagger 문서 + Markdown 가이드 구성
+- dopamine-file: 파일 업로드 및 응답 자동 포맷
+- dopamine-admin: 설정/헬스 정보 확인 인터페이스
+- 알림, 캐시, 배치 등 실무 필수 기능 모듈 예정
+
 ---
 
-## 📜 라이선스
+## ⚙️ 기술 스택
 
-MIT License
+* **Spring Boot 3.x**
+* **Kotlin** + **Gradle (Kotlin DSL)**
+* **Kotest** 기반 테스트 통일
 
 ---
 
 ## 🙋‍♂️ Maintainer
 
-* DY (a.k.a 디와이.log)
-* 기술 블로그: [https://velog.io/@dylog/posts](https://velog.io/@dylog/posts) *(예정)*
+* DY (a.k.a dy.log)
+* 기술 블로그: [https://velog.io/@dylog/posts](https://velog.io/@dylog/posts)
+
+---
+
+## 📜 라이선스
+
+MIT License
