@@ -12,16 +12,18 @@ import org.springframework.context.annotation.Bean
 
 @AutoConfiguration
 @ConditionalOnProperty(
+    prefix = DocsPropertyKeys.PREFIX,
     name = [DocsPropertyKeys.ENABLED],
     havingValue = "true",
     matchIfMissing = true,
 )
 @EnableConfigurationProperties(DocsProperties::class)
 class DocsAutoConfiguration {
+
     @Bean
     @ConditionalOnProperty(
-        prefix = DocsPropertyKeys.Swagger.ENABLED,
-        name = ["enabled"],
+        prefix = DocsPropertyKeys.Swagger.PREFIX,
+        name = [DocsPropertyKeys.ENABLED],
         havingValue = "true",
         matchIfMissing = true,
     )
@@ -33,17 +35,27 @@ class DocsAutoConfiguration {
                 .description(props.swagger.description),
         )
 
+    /**
+     * Registers the default Swagger group for Dopamine.
+     * This group is always enabled and fixed to scan the core package.
+     */
     @Bean
-    @ConditionalOnProperty(
-        prefix = "dopamine.docs.swagger",
-        name = ["enabled"],
-        havingValue = "true",
-        matchIfMissing = true,
-    )
-    fun groupedOpenApi(props: DocsProperties): GroupedOpenApi =
-        GroupedOpenApi
-            .builder()
-            .group("default")
-            .packagesToScan(props.swagger.basePackage)
+    fun defaultGroupedOpenApi(): GroupedOpenApi =
+        GroupedOpenApi.builder()
+            .group(DocsPropertyKeys.Swagger.DEFAULT_GROUP_NAME)
+            .packagesToScan(DocsPropertyKeys.Swagger.DEFAULT_BASE_PACKAGE)
             .build()
+
+    /**
+     * Registers additional user-defined Swagger groups.
+     * These are optional and configured via properties.
+     */
+    @Bean
+    fun additionalGroupedOpenApis(props: DocsProperties): List<GroupedOpenApi> =
+        props.swagger.additionalGroups.map { group ->
+            GroupedOpenApi.builder()
+                .group(group.name)
+                .packagesToScan(*group.basePackages.toTypedArray())
+                .build()
+        }
 }
