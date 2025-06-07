@@ -1,7 +1,6 @@
 package io.dopamine.docs.config
 
 object DocsPropertyKeys {
-
     const val PREFIX = "dopamine.docs"
     const val ENABLED = "enabled"
 

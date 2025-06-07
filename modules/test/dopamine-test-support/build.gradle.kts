@@ -6,8 +6,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":modules:response:dopamine-response-core"))
-    implementation(project(":modules:trace:dopamine-trace-core"))
+    implementation(project(":modules:response:dopamine-response-common"))
+    implementation(project(":modules:trace:dopamine-trace-common"))
 
     implementation(libs.spring.boot.starter.test)
     implementation(libs.kotest.assertions.core)

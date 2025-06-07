@@ -1,6 +1,6 @@
 package io.dopamine.trace.mvc.request
 
-import io.dopamine.trace.core.request.RequestTraceContext
+import io.dopamine.trace.common.request.RequestTraceContext
 import jakarta.servlet.http.HttpServletRequest
 
 /**

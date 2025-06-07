@@ -1,7 +1,7 @@
 package io.dopamine.trace.mvc.resolver
 
-import io.dopamine.trace.core.request.RequestTraceContext
-import io.dopamine.trace.core.resolver.TraceIdResolver
+import io.dopamine.trace.common.request.RequestTraceContext
+import io.dopamine.trace.common.resolver.TraceIdResolver
 import org.slf4j.MDC
 
 /**

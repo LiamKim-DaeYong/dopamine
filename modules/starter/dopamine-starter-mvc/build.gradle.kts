@@ -7,7 +7,7 @@ plugins {
 
 dependencies {
     api(project(":modules:response:dopamine-response-mvc"))
-    api(project(":modules:starter:dopamine-starter-core"))
+    api(project(":modules:starter:dopamine-starter-common"))
 
     implementation(libs.spring.boot.starter.web)
     testImplementation(libs.spring.boot.starter.test)

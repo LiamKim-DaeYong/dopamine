@@ -1,8 +1,8 @@
 package io.dopamine.response.mvc.advice
 
-import io.dopamine.response.core.exception.DopamineException
-import io.dopamine.response.core.factory.DopamineResponseFactory
-import io.dopamine.response.core.model.DopamineResponse
+import io.dopamine.response.common.exception.DopamineException
+import io.dopamine.response.common.factory.DopamineResponseFactory
+import io.dopamine.response.common.model.DopamineResponse
 import io.dopamine.response.mvc.meta.ResponseMetaBuilder
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order

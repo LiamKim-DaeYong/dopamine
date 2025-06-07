@@ -6,5 +6,5 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":modules:response:dopamine-response-core"))
+    implementation(project(":modules:response:dopamine-response-common"))
 }
