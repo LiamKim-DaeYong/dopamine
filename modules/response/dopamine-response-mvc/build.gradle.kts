@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":modules:response:dopamine-response-core"))
+    api(project(":modules:response:dopamine-response-common"))
     api(project(":modules:trace:dopamine-trace-mvc"))
     implementation(libs.spring.boot.starter.web)
 

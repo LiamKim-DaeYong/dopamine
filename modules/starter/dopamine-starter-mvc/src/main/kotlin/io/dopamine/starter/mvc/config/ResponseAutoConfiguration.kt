@@ -2,13 +2,13 @@ package io.dopamine.starter.mvc.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.dopamine.i18n.resolver.MessageResolver
-import io.dopamine.response.core.config.ResponseProperties
-import io.dopamine.response.core.config.ResponsePropertyKeys
-import io.dopamine.response.core.factory.DopamineResponseFactory
+import io.dopamine.response.common.config.ResponseProperties
+import io.dopamine.response.common.config.ResponsePropertyKeys
+import io.dopamine.response.common.factory.DopamineResponseFactory
 import io.dopamine.response.mvc.advice.DopamineErrorResponseAdvice
 import io.dopamine.response.mvc.advice.DopamineResponseAdvice
 import io.dopamine.response.mvc.meta.ResponseMetaBuilder
-import io.dopamine.trace.core.resolver.TraceIdResolver
+import io.dopamine.trace.common.resolver.TraceIdResolver
 import io.dopamine.trace.mvc.config.TraceProperties
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.boot.autoconfigure.AutoConfiguration

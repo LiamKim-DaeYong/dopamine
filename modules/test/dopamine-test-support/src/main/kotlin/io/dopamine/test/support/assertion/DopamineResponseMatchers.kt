@@ -1,6 +1,6 @@
 package io.dopamine.test.support.assertion
 
-import io.dopamine.response.core.model.DopamineResponse
+import io.dopamine.response.common.model.DopamineResponse
 import io.kotest.matchers.shouldBe
 import java.time.format.DateTimeFormatter
 

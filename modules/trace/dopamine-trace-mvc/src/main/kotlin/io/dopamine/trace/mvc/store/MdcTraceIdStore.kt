@@ -1,6 +1,6 @@
 package io.dopamine.trace.mvc.store
 
-import io.dopamine.trace.core.store.TraceIdStore
+import io.dopamine.trace.common.store.TraceIdStore
 import org.slf4j.MDC
 
 /**

@@ -1,7 +1,7 @@
 package io.dopamine.trace.mvc.filter
 
-import io.dopamine.trace.core.generator.TraceIdGenerator
-import io.dopamine.trace.core.store.TraceIdStore
+import io.dopamine.trace.common.generator.TraceIdGenerator
+import io.dopamine.trace.common.store.TraceIdStore
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

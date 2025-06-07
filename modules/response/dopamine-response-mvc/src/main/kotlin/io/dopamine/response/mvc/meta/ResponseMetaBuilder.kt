@@ -1,6 +1,6 @@
 package io.dopamine.response.mvc.meta
 
-import io.dopamine.trace.core.resolver.TraceIdResolver
+import io.dopamine.trace.common.resolver.TraceIdResolver
 import io.dopamine.trace.mvc.config.TraceProperties
 import io.dopamine.trace.mvc.request.ServletTraceContext
 import jakarta.servlet.http.HttpServletRequest

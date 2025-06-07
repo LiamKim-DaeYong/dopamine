@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":modules:trace:dopamine-trace-core"))
+    api(project(":modules:trace:dopamine-trace-common"))
     implementation(libs.spring.boot.starter.web)
     testImplementation(libs.spring.boot.starter.test)
 }

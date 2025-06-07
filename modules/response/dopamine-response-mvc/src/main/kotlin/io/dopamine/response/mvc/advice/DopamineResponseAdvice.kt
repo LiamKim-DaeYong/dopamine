@@ -1,8 +1,8 @@
 package io.dopamine.response.mvc.advice
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.dopamine.response.core.factory.DopamineResponseFactory
-import io.dopamine.response.core.model.DopamineResponse
+import io.dopamine.response.common.factory.DopamineResponseFactory
+import io.dopamine.response.common.model.DopamineResponse
 import io.dopamine.response.mvc.meta.ResponseMetaBuilder
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
@@ -80,8 +80,8 @@ class DopamineResponseAdvice(
         val acceptHeader = request.getHeader("Accept") ?: ""
         val uri = request.requestURI
 
-        return acceptHeader.contains("application/vnd.springdoc+json")
-            || uri.startsWith("/swagger-ui")
-            || uri.startsWith("/v3/api-docs")
+        return acceptHeader.contains("application/vnd.springdoc+json") ||
+            uri.startsWith("/swagger-ui") ||
+            uri.startsWith("/v3/api-docs")
     }
 }

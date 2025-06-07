@@ -1,8 +1,8 @@
 package io.dopamine.test.support.factory
 
 import io.dopamine.i18n.resolver.MessageResolver
-import io.dopamine.response.core.config.ResponseProperties
-import io.dopamine.response.core.factory.DopamineResponseFactory
+import io.dopamine.response.common.config.ResponseProperties
+import io.dopamine.response.common.factory.DopamineResponseFactory
 
 object DopamineResponseFactoryFixtures {
     fun dummy(
