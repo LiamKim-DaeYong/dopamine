@@ -1,8 +1,7 @@
 package io.dopamine.response.core.factory
 
-import io.dopamine.core.code.SuccessCode
+import io.dopamine.response.core.code.DefaultSuccessCode
 import io.dopamine.i18n.resolver.MessageResolver
-import io.dopamine.response.core.code.fromHttpStatus
 import io.dopamine.response.core.config.CustomResponseCode
 import io.dopamine.response.core.config.ResponseProperties
 import io.dopamine.response.core.model.DopamineResponse
@@ -95,7 +94,7 @@ class DopamineResponseFactory(
 
             val finalMessage =
                 message
-                    ?: SuccessCode.fromHttpStatusCode(status.value())?.let {
+                    ?: DefaultSuccessCode.fromHttpStatus(status)?.let {
                         val resolved = messageResolver.resolve(it.messageKey, locale)
                         if (resolved != it.messageKey) resolved else it.defaultMessage
                     }
@@ -104,7 +103,7 @@ class DopamineResponseFactory(
             return config.code to finalMessage
         }
 
-        SuccessCode.fromHttpStatus(status)?.let {
+        DefaultSuccessCode.fromHttpStatus(status)?.let {
             val resolved = messageResolver.resolve(it.messageKey, locale)
             val message = if (resolved != it.messageKey) resolved else it.defaultMessage
             return it.code to message

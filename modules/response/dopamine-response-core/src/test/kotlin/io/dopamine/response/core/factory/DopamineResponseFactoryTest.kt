@@ -1,6 +1,6 @@
 package io.dopamine.response.core.factory
 
-import io.dopamine.core.code.SuccessCode
+import io.dopamine.response.core.code.DefaultSuccessCode
 import io.dopamine.response.core.config.CustomResponseCode
 import io.dopamine.response.core.config.ResponseProperties
 import io.dopamine.response.core.format.TimestampFormat
@@ -39,8 +39,8 @@ class DopamineResponseFactoryTest :
 
                 response shouldBeSuccessWith
                     ExpectedResponse(
-                        code = SuccessCode.SUCCESS.code,
-                        message = SuccessCode.SUCCESS.defaultMessage,
+                        code = DefaultSuccessCode.SUCCESS.code,
+                        message = DefaultSuccessCode.SUCCESS.defaultMessage,
                         data = "hello",
                         traceId = defaultTraceId,
                         formatter = formatter,
@@ -96,8 +96,8 @@ class DopamineResponseFactoryTest :
 
                 response shouldBeSuccessWith
                     ExpectedResponse(
-                        code = SuccessCode.CREATED.code,
-                        message = SuccessCode.CREATED.defaultMessage,
+                        code = DefaultSuccessCode.CREATED.code,
+                        message = DefaultSuccessCode.CREATED.defaultMessage,
                         data = "default case",
                         traceId = defaultTraceId,
                         formatter = formatter,
