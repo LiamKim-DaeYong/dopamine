@@ -6,6 +6,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":modules:core:dopamine-core"))
+    api(project(":modules:core:dopamine-core"))
     implementation(libs.spring.boot.starter.web)
 }
