@@ -30,16 +30,16 @@
 
 ## 🧩 모듈 구성
 
-| 모듈              | 역할 설명 |
-|-------------------|-----------|
-| `trace-core`      | traceId 생성 및 추상화 구성 |
-| `trace-mvc`       | MDC 기반 traceId 필터 구성 |
-| `response-core`   | 공통 응답 포맷 정의 및 meta 구조 |
-| `response-mvc`    | 자동 응답/예외 래핑 Advice 구성 |
-| `starter-mvc`     | 위 모듈 통합 자동 구성 |
-| `sample`          | 기능 통합 샘플 애플리케이션 |
-
----
+| 모듈                   | 역할 설명 |
+|------------------------|-----------|
+| `trace-common`         | traceId 생성 및 추상화 (UUID, 커스텀 등) |
+| `trace-mvc`            | Servlet(MDC) 기반 traceId 추출 및 필터 구성 |
+| `i18n`                 | 메시지 국제화 설정 및 다국어 바인딩 지원 |
+| `response-common`      | 공통 응답 포맷(`DopamineResponse`) 및 meta 구조 정의 |
+| `response-mvc`         | 응답/예외 자동 래핑 `@RestControllerAdvice` 구성 |
+| `starter-common`       | Swagger 설정 등 부가 기능 통합 구성 |
+| `starter-mvc`          | `trace-mvc`, `response-mvc`, `starter-common` 자동 설정 통합 |
+| `sample`               | starter 의존성 기반 통합 동작 검증 샘플 앱 |
 
 ## 📂 샘플 실행 방법
 
