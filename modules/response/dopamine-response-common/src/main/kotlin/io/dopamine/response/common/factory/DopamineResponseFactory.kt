@@ -1,6 +1,7 @@
 package io.dopamine.response.common.factory
 
 import io.dopamine.i18n.resolver.MessageResolver
+import io.dopamine.response.common.code.DefaultErrorCode
 import io.dopamine.response.common.code.DefaultSuccessCode
 import io.dopamine.response.common.config.CustomResponseCode
 import io.dopamine.response.common.config.ResponseProperties
@@ -9,7 +10,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
-import java.util.Locale
 
 /**
  * Factory responsible for constructing standardized DopamineResponse<T> instances.
@@ -25,16 +25,31 @@ class DopamineResponseFactory(
 
     fun <T> success(
         data: T?,
+        responseCode: DefaultSuccessCode = DefaultSuccessCode.SUCCESS,
         meta: Map<String, Any>? = null,
     ): DopamineResponse<T> {
-        val timestamp = formatTimestamp()
-        val (code, message) = resolveCode(HttpStatus.OK)
+        val (code, message) = resolveCode(HttpStatus.valueOf(responseCode.httpStatus))
 
         return DopamineResponse(
             code = code,
             message = message,
             data = data,
-            timestamp = timestamp,
+            timestamp = formatTimestamp(),
+            meta = meta,
+        )
+    }
+
+    fun fail(
+        responseCode: DefaultErrorCode,
+        meta: Map<String, Any>? = null,
+    ): DopamineResponse<Nothing> {
+        val (code, message) = resolveCode(HttpStatus.valueOf(responseCode.httpStatus))
+
+        return DopamineResponse(
+            code = code,
+            message = message,
+            data = null,
+            timestamp = formatTimestamp(),
             meta = meta,
         )
     }
@@ -81,32 +96,19 @@ class DopamineResponseFactory(
             }
     }
 
-    private fun resolveCode(
-        status: HttpStatus,
-        locale: Locale = Locale.getDefault(),
-    ): Pair<String, String> {
+    private fun resolveCode(status: HttpStatus): Pair<String, String> {
         customCodeMap[status.value()]?.let { config ->
-            val message =
-                config.messageKey?.let { key ->
-                    val resolved = messageResolver.resolve(key, locale)
-                    if (resolved != key) resolved else null
-                } ?: config.message
-
-            val finalMessage =
-                message
-                    ?: DefaultSuccessCode.fromHttpStatus(status)?.let {
-                        val resolved = messageResolver.resolve(it.messageKey, locale)
-                        if (resolved != it.messageKey) resolved else it.defaultMessage
-                    }
-                    ?: status.reasonPhrase
-
-            return config.code to finalMessage
+            if (config.messageKey != null || config.message != null) {
+                messageResolver.resolve(config.messageKey, config.message)?.let { message ->
+                    return config.code to message
+                }
+            }
         }
 
-        DefaultSuccessCode.fromHttpStatus(status)?.let {
-            val resolved = messageResolver.resolve(it.messageKey, locale)
-            val message = if (resolved != it.messageKey) resolved else it.defaultMessage
-            return it.code to message
+        DefaultSuccessCode.fromHttpStatus(status)?.let { default ->
+            messageResolver.resolve(default.messageKey, default.defaultMessage)?.let { message ->
+                return default.code to message
+            }
         }
 
         return status.name to status.reasonPhrase

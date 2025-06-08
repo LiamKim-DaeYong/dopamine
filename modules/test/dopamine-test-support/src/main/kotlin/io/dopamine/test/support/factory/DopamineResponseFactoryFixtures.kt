@@ -7,6 +7,13 @@ import io.dopamine.response.common.factory.DopamineResponseFactory
 object DopamineResponseFactoryFixtures {
     fun dummy(
         props: ResponseProperties = ResponseProperties(),
-        messageResolver: MessageResolver = MessageResolver { key, _ -> key },
+        messageResolver: MessageResolver,
     ): DopamineResponseFactory = DopamineResponseFactory(props, messageResolver)
+
+    fun messageResolverWith(vararg pairs: Pair<String, String>): MessageResolver {
+        val map = pairs.toMap()
+        return MessageResolver { key, default ->
+            key?.let { map[it] } ?: default ?: ""
+        }
+    }
 }
