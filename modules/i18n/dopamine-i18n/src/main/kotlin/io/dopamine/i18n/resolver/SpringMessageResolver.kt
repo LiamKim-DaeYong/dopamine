@@ -1,6 +1,8 @@
 package io.dopamine.i18n.resolver
 
 import org.springframework.context.MessageSource
+import org.springframework.context.NoSuchMessageException
+import org.springframework.context.i18n.LocaleContextHolder
 import java.util.Locale
 
 /**
@@ -10,9 +12,20 @@ import java.util.Locale
  */
 class SpringMessageResolver(
     private val messageSource: MessageSource,
+    private val localeProvider: () -> Locale = { LocaleContextHolder.getLocale() },
 ) : MessageResolver {
     override fun resolve(
-        key: String,
-        locale: Locale,
-    ): String = messageSource.getMessage(key, null, null, locale) ?: key
+        messageKey: String?,
+        defaultMessage: String?,
+    ): String? {
+        val locale = localeProvider()
+
+        return messageKey?.let {
+            try {
+                messageSource.getMessage(it, null, null, locale)
+            } catch (ex: NoSuchMessageException) {
+                defaultMessage
+            }
+        } ?: defaultMessage
+    }
 }
