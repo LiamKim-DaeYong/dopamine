@@ -114,9 +114,9 @@ subprojects {
             }
         }
 
-        if (!pluginManager.hasPlugin("application")) {
-            tasks.findByName("bootJar")?.enabled = false
-            tasks.findByName("jar")?.enabled = true
+        plugins.withId("org.springframework.boot") {
+            tasks.named("bootJar").configure { enabled = false }
+            tasks.named("jar").configure { enabled = true }
         }
     }
 }

@@ -1,4 +1,4 @@
-package io.dopamine.starter.common.config
+package io.dopamine.starter.common.autoconfig.i18n
 
 import io.dopamine.i18n.config.I18nProperties
 import io.dopamine.i18n.resolver.MessageResolver
