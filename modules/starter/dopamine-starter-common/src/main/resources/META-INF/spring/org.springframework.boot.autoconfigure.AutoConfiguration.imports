@@ -1,1 +1,2 @@
-io.dopamine.starter.common.DocsAutoConfiguration
+io.dopamine.starter.common.config.DocsAutoConfiguration
+io.dopamine.starter.common.config.I18nAutoConfiguration

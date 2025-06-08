@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     api(project(":modules:docs:dopamine-docs"))
+    api(project(":modules:i18n:dopamine-i18n"))
     implementation(libs.spring.boot.starter.web)
     testImplementation(libs.spring.boot.starter.test)
 }
