@@ -1,4 +1,4 @@
-package io.dopamine.starter.mvc.config
+package io.dopamine.starter.mvc.autoconfig.trace
 
 import io.dopamine.trace.common.generator.TraceIdGenerator
 import io.dopamine.trace.common.generator.UuidTraceIdGenerator

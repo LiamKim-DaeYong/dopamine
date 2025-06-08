@@ -1,4 +1,4 @@
-package io.dopamine.starter.mvc.config
+package io.dopamine.starter.mvc.autoconfig.response
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.dopamine.i18n.resolver.MessageResolver

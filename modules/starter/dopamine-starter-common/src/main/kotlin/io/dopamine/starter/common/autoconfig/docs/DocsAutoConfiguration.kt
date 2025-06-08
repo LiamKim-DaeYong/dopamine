@@ -1,4 +1,4 @@
-package io.dopamine.starter.common.config
+package io.dopamine.starter.common.autoconfig.docs
 
 import io.dopamine.docs.config.DocsProperties
 import io.dopamine.docs.config.DocsPropertyKeys
