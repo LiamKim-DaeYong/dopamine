@@ -1,5 +1,6 @@
-package io.dopamine.i18n.config
+package io.dopamine.starter.common.config
 
+import io.dopamine.i18n.config.I18nProperties
 import io.dopamine.i18n.resolver.MessageResolver
 import io.dopamine.i18n.resolver.SpringMessageResolver
 import org.springframework.boot.autoconfigure.AutoConfiguration

@@ -1,9 +1,14 @@
-package io.dopamine.trace.mvc.config
+package io.dopamine.starter.mvc.config
 
 import io.dopamine.trace.common.generator.TraceIdGenerator
 import io.dopamine.trace.common.generator.UuidTraceIdGenerator
+import io.dopamine.trace.common.resolver.CompositeTraceIdResolver
+import io.dopamine.trace.common.resolver.HeaderTraceIdResolver
+import io.dopamine.trace.common.resolver.TraceIdResolver
 import io.dopamine.trace.common.store.TraceIdStore
+import io.dopamine.trace.mvc.config.TraceProperties
 import io.dopamine.trace.mvc.filter.TraceIdFilter
+import io.dopamine.trace.mvc.resolver.MdcTraceIdResolver
 import io.dopamine.trace.mvc.store.MdcTraceIdStore
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -21,11 +26,11 @@ import org.springframework.web.filter.OncePerRequestFilter
  * - [io.dopamine.trace.common.store.TraceIdStore]: stores the traceId in MDC
  * - [io.dopamine.trace.mvc.filter.TraceIdFilter]: servlet filter that manages the traceId lifecycle
  *
- * Configuration is bound to the `dopamine.trace` prefix via [TraceProperties].
+ * Configuration is bound to the `dopamine.trace` prefix via [io.dopamine.trace.mvc.config.TraceProperties].
  */
 @AutoConfiguration
 @EnableConfigurationProperties(TraceProperties::class)
-class TraceIdMvcAutoConfiguration {
+class TraceIdAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     fun traceIdGenerator(): TraceIdGenerator = UuidTraceIdGenerator()
@@ -43,6 +48,17 @@ class TraceIdMvcAutoConfiguration {
         val filter = TraceIdFilter(generator, store)
         return FilterRegistrationBean<OncePerRequestFilter>(filter).apply {
             order = Ordered.HIGHEST_PRECEDENCE
+        }
+    }
+
+    @AutoConfiguration
+    class TraceIdResolverConfig {
+        @Bean
+        @ConditionalOnMissingBean(TraceIdResolver::class)
+        fun traceIdResolver(props: TraceProperties): TraceIdResolver {
+            val header = HeaderTraceIdResolver(props.traceIdHeader)
+            val mdc = MdcTraceIdResolver(props.traceIdKey)
+            return CompositeTraceIdResolver(listOf(header, mdc))
         }
     }
 }
