@@ -8,6 +8,7 @@ import io.dopamine.response.common.model.DopamineResponse
 import io.dopamine.test.support.assertion.ExpectedResponse
 import io.dopamine.test.support.assertion.shouldBeSuccessWith
 import io.dopamine.test.support.factory.DopamineResponseFactoryFixtures
+import io.dopamine.test.support.factory.DopamineResponseFactoryFixtures.messageResolverWith
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.http.HttpStatus
@@ -19,23 +20,33 @@ class DopamineResponseFactoryTest :
         val defaultTraceId = "test-trace-id"
         val formatter: DateTimeFormatter = TimestampFormat.ISO_8601.formatter()
 
+        val baseMessageResolver =
+            messageResolverWith(
+                "dopamine.success.200" to "Request was successful.",
+                "dopamine.success.201" to "Resource has been created.",
+                "dopamine.error.500" to "Internal server error.",
+            )
+
+        val defaultProps =
+            ResponseProperties(
+                includeMeta = true,
+                timestampFormat = TimestampFormat.ISO_8601,
+            )
+
         lateinit var factory: DopamineResponseFactory
 
         beforeTest {
             factory =
                 DopamineResponseFactoryFixtures.dummy(
-                    props =
-                        ResponseProperties(
-                            includeMeta = true,
-                            timestampFormat = TimestampFormat.ISO_8601,
-                        ),
+                    props = defaultProps,
+                    messageResolver = baseMessageResolver,
                 )
         }
 
         context("success(...)") {
 
             test("should include traceId and timestamp when called with default settings") {
-                val response: DopamineResponse<String> = factory.success("hello", mapOf("traceId" to defaultTraceId))
+                val response = factory.success("hello", meta = mapOf("traceId" to defaultTraceId))
 
                 response shouldBeSuccessWith
                     ExpectedResponse(
@@ -48,19 +59,18 @@ class DopamineResponseFactoryTest :
             }
 
             test("should apply custom response code and message when defined in properties") {
-                val props =
-                    ResponseProperties(
-                        includeMeta = true,
-                        timestampFormat = TimestampFormat.ISO_8601,
-                        codes =
-                            listOf(
-                                CustomResponseCode(200, "Custom200", "Custom Success"),
-                            ),
+                val customProps =
+                    defaultProps.copy(
+                        codes = listOf(CustomResponseCode(200, "Custom200", "Custom Success")),
                     )
-                val factory =
-                    DopamineResponseFactoryFixtures.dummy(props = props)
 
-                val response = factory.success("hello", mapOf("traceId" to defaultTraceId))
+                val factory =
+                    DopamineResponseFactoryFixtures.dummy(
+                        props = customProps,
+                        messageResolver = baseMessageResolver,
+                    )
+
+                val response = factory.success("hello", meta = mapOf("traceId" to defaultTraceId))
 
                 response shouldBeSuccessWith
                     ExpectedResponse(
@@ -73,13 +83,15 @@ class DopamineResponseFactoryTest :
             }
 
             test("should return null meta when includeMeta is false") {
+                val noMetaProps = defaultProps.copy(includeMeta = false)
+
                 val factory =
                     DopamineResponseFactoryFixtures.dummy(
-                        props = ResponseProperties(includeMeta = false),
+                        props = noMetaProps,
+                        messageResolver = baseMessageResolver,
                     )
 
-                val response = factory.success("data", null)
-
+                val response = factory.success("data", meta = null)
                 response.meta shouldBe null
             }
         }

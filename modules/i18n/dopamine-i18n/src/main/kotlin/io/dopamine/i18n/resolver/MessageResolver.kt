@@ -1,7 +1,5 @@
 package io.dopamine.i18n.resolver
 
-import java.util.Locale
-
 /**
  * Resolves localized messages using a message key and locale.
  *
@@ -9,7 +7,7 @@ import java.util.Locale
  */
 fun interface MessageResolver {
     fun resolve(
-        key: String,
-        locale: Locale,
-    ): String
+        messageKey: String?,
+        defaultMessage: String?,
+    ): String?
 }
