@@ -3,6 +3,7 @@ rootProject.name = "dopamine"
 val moduleGroups = listOf(
     "core",
     "docs",
+    "file",
     "i18n",
     "response",
     "sample",

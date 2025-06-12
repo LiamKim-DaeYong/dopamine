@@ -1,4 +1,4 @@
-package io.dopamine.response.common.format
+package io.dopamine.core.format
 
 import java.time.format.DateTimeFormatter
 

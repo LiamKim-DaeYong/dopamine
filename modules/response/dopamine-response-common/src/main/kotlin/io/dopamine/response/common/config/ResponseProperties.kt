@@ -1,6 +1,6 @@
 package io.dopamine.response.common.config
 
-import io.dopamine.response.common.format.TimestampFormat
+import io.dopamine.core.format.TimestampFormat
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 /**
