@@ -83,8 +83,9 @@ GET http://localhost:8080/sample/dto
 
 ## ⚙️ 기술 스택
 
-* **Spring Boot 3.x**
-* **Kotlin** + **Gradle (Kotlin DSL)**
+* **Spring Boot 3.4.5**
+* **Kotlin: 2.1.0**
+* **Gradle (Kotlin DSL)**
 * **Kotest** 기반 테스트 통일
 
 ---
