@@ -37,7 +37,8 @@
 | `i18n`                 | 메시지 국제화 설정 및 다국어 바인딩 지원 |
 | `response-common`      | 공통 응답 포맷(`DopamineResponse`) 및 meta 구조 정의 |
 | `response-mvc`         | 응답/예외 자동 래핑 `@RestControllerAdvice` 구성 |
-| `starter-common`       | Swagger 설정 등 부가 기능 통합 구성 |
+| `docs`                 | Swagger 자동 구성 및 기본 그룹 설정 |
+| `starter-common`       | 공통 설정 등 부가 기능 통합 구성 |
 | `starter-mvc`          | `trace-mvc`, `response-mvc`, `starter-common` 자동 설정 통합 |
 | `sample`               | starter 의존성 기반 통합 동작 검증 샘플 앱 |
 
@@ -86,7 +87,7 @@ GET http://localhost:8080/sample/dto
 * **Spring Boot 3.4.5**
 * **Kotlin: 2.1.0**
 * **Gradle (Kotlin DSL)**
-* **Kotest** 기반 테스트 통일
+* **Kotest**
 
 ---
 
