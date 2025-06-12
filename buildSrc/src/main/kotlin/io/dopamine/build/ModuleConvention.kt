@@ -8,6 +8,7 @@ object ModuleConvention {
     val groups = listOf(
         "core",
         "docs",
+        "file",
         "i18n",
         "response",
         "sample",

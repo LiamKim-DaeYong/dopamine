@@ -1,9 +1,9 @@
 package io.dopamine.response.common.factory
 
+import io.dopamine.core.format.TimestampFormat
 import io.dopamine.response.common.code.DefaultSuccessCode
 import io.dopamine.response.common.config.CustomResponseCode
 import io.dopamine.response.common.config.ResponseProperties
-import io.dopamine.response.common.format.TimestampFormat
 import io.dopamine.test.support.assertion.ExpectedResponse
 import io.dopamine.test.support.assertion.shouldBeSuccessWith
 import io.dopamine.test.support.factory.DopamineResponseFactoryFixtures
