@@ -8,6 +8,7 @@ plugins {
 }
 
 dependencies {
+    api(project(":modules:file:dopamine-file-mvc"))
     api(project(":modules:response:dopamine-response-mvc"))
     api(project(":modules:starter:dopamine-starter-common"))
 
