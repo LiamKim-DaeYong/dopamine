@@ -2,6 +2,7 @@ package io.dopamine.file.common.storage
 
 import io.dopamine.file.common.model.FileUploadRequest
 import io.dopamine.file.common.model.StoredFile
+import org.springframework.util.MimeType
 
 /**
  * Core interface for file storage handling in the Dopamine framework.
@@ -28,9 +29,10 @@ interface FileStorage {
     /**
      * Deletes a file from the storage by its full path or storage key.
      *
-     * @param storagePath the full internal path or key used to locate the file
+     * @param storagePath the internal path or key used to locate the file
+     * @return true if the file was deleted, false if not found
      */
-    fun delete(storagePath: String)
+    fun delete(storagePath: String): Boolean
 
     /**
      * Resolves a public-accessible URL for a given stored file path, if supported.
@@ -49,4 +51,17 @@ interface FileStorage {
      * @return true if the file exists, false otherwise
      */
     fun exists(storagePath: String): Boolean
+
+    /**
+     * Attempts to detect the MIME type of a file by its internal storage path.
+     *
+     * This is useful when downloading files or generating preview links that require accurate content type information.
+     * Implementations may use OS-level detection (e.g., Files.probeContentType) or storage-specific metadata (e.g., S3 headObject).
+     *
+     * @param storagePath the internal path or key used to locate the file
+     * @return a [MimeType] representing the file's content type, or null if unknown or detection is unsupported
+     * @throws FileStorageException if an error occurs during detection
+     */
+    fun detectContentType(storagePath: String): MimeType? =
+        throw UnsupportedOperationException("detectContentType is not supported by this storage")
 }

@@ -14,6 +14,14 @@ data class FileProperties(
      */
     val enabled: Boolean = true,
     /**
+     * Base path prefix for all file-related HTTP endpoints.
+     * This value determines the root URL for exposed file APIs.
+     *
+     * Default: "/dopamine/v1/files"
+     * Example: POST {basePath}/upload
+     */
+    val basePath: String = "/dopamine/v1/files",
+    /**
      * A list of file storage configurations.
      * Each storage must have a unique [name] and define its [type] and corresponding settings.
      */

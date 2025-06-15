@@ -5,6 +5,8 @@ import io.dopamine.file.common.code.FileErrorCode
 import io.dopamine.file.common.exception.FileStorageException
 import io.dopamine.file.common.model.FileUploadRequest
 import io.dopamine.file.common.model.StoredFile
+import org.springframework.util.MimeType
+import org.springframework.util.MimeTypeUtils
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -39,7 +41,7 @@ class LocalFileStorage(
 
             return StoredFile(
                 name = uniqueName,
-                originalName = sanitizedName,
+                originalName = request.originalFilename,
                 fullPath = relativePath.toString().replace(File.separatorChar, '/'),
                 contentType = request.contentType,
                 size = request.size,
@@ -73,13 +75,14 @@ class LocalFileStorage(
         }
     }
 
-    override fun delete(storagePath: String) {
+    override fun delete(storagePath: String): Boolean {
         val path = resolvePath(storagePath)
 
-        if (!Files.exists(path)) return
+        if (!Files.exists(path)) return false
 
-        try {
+        return try {
             Files.delete(path)
+            true
         } catch (ex: IOException) {
             throw FileStorageException(
                 code = FileErrorCode.FILE_DELETE_FAILED,
@@ -93,13 +96,28 @@ class LocalFileStorage(
 
     override fun exists(storagePath: String): Boolean = Files.exists(resolvePath(storagePath))
 
+    override fun detectContentType(storagePath: String): MimeType? {
+        val path = resolvePath(storagePath)
+
+        return try {
+            Files
+                .probeContentType(path)
+                ?.takeIf { it.isNotBlank() }
+                ?.let { MimeTypeUtils.parseMimeType(it) }
+        } catch (ex: IOException) {
+            null
+        } catch (ex: IllegalArgumentException) {
+            null
+        }
+    }
+
     private fun resolvePath(relativePath: String): Path = baseDir.resolve(relativePath).normalize().toAbsolutePath()
 
     private fun sanitizeFilename(original: String): String = original.replace(Regex("[^a-zA-Z0-9_.-]"), "_")
 
     private fun buildRelativePath(fileName: String): Path =
         if (useDateFolder) {
-            val formatter = TimestampFormat.COMPACT.formatter()
+            val formatter = TimestampFormat.DATE.formatter()
             val datePath = LocalDateTime.now().format(formatter)
             Path.of(datePath).resolve(fileName)
         } else {
