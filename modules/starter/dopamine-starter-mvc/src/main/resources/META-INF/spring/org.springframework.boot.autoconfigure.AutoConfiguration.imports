@@ -1,0 +1,3 @@
+io.dopamine.starter.mvc.autoconfig.file.FileAutoConfiguration
+io.dopamine.starter.mvc.autoconfig.response.ResponseAutoConfiguration
+io.dopamine.starter.mvc.autoconfig.trace.TraceIdAutoConfiguration
