@@ -18,7 +18,7 @@ class I18nAutoConfiguration {
     @ConditionalOnMissingBean(MessageSource::class)
     fun messageSource(props: I18nProperties): MessageSource =
         ReloadableResourceBundleMessageSource().apply {
-            val finalBaseNameList = props.basenames + "classpath:/dopamine/messages"
+            val finalBaseNameList = props.baseNames + "classpath:/dopamine/messages"
             setBasenames(*finalBaseNameList.toTypedArray())
             setDefaultEncoding(props.encoding)
             setFallbackToSystemLocale(props.fallbackToSystemLocale)
