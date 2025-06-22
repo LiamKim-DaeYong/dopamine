@@ -5,35 +5,22 @@ object ModuleConvention {
     const val VERSION = "0.0.1-SNAPSHOT"
     const val JVM_TARGET = "21"
 
+    const val MAIN_SOURCE_DIR = "src/main/kotlin"
+
     val groups = listOf(
-        "auth",
-        "core",
-        "docs",
-        "file",
-        "i18n",
-        "response",
-        "sample",
-        "starter",
-        "test",
-        "trace"
+        "auth", "core", "docs", "file", "i18n", "response",
+        "sample", "starter", "test", "trace"
     )
 
-    val jacocoExcludes = listOf(
-        "**/Q*",
-        "**/*Config*",
-        "**/dto/**",
-        "**/generated/**",
-        "**/Dummy*",
-        "**/*Kt.class"
-    )
-
-    val ktlintExcludes = listOf(
-        "**/build/**",
-        "**/generated/**",
-        "**/src/main/java/**",
-        "**/src/test/java/**",
-    )
+    object Spring {
+        const val BOM_GROUP = "org.springframework.boot"
+        const val BOM_ARTIFACT = "spring-boot-dependencies"
+        const val BOM = "$BOM_GROUP:$BOM_ARTIFACT"
+    }
 
     fun allPaths(base: String = "modules"): List<String> =
         groups.map { "$base/$it" }
+
+    val buildDirs = allPaths().map { "$it/build" } +
+        listOf("modules/build", "buildSrc/build")
 }
