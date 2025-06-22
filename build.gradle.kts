@@ -1,4 +1,5 @@
 import io.dopamine.build.ModuleConvention
+import io.dopamine.build.ModuleConvention.ktlintExcludes
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -63,7 +64,7 @@ subprojects {
         outputToConsole.set(true)
 
         filter {
-            exclude("**/build/**", "**/generated/**")
+            exclude(ktlintExcludes)
         }
 
         reporters {

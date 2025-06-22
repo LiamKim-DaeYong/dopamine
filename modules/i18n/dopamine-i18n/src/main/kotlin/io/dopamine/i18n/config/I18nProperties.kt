@@ -11,7 +11,7 @@ data class I18nProperties(
     /**
      * List of base paths for message bundles (e.g. classpath:/messages, classpath:/dopamine/messages)
      */
-    var basenames: List<String> = listOf("classpath:/messages"),
+    var baseNames: List<String> = listOf("classpath:/messages"),
     /**
      * Default locale to use if none is specified (e.g. "en", "ko").
      */

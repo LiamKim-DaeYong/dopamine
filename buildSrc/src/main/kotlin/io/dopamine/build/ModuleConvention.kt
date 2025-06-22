@@ -6,6 +6,7 @@ object ModuleConvention {
     const val JVM_TARGET = "21"
 
     val groups = listOf(
+        "auth",
         "core",
         "docs",
         "file",
@@ -24,6 +25,13 @@ object ModuleConvention {
         "**/generated/**",
         "**/Dummy*",
         "**/*Kt.class"
+    )
+
+    val ktlintExcludes = listOf(
+        "**/build/**",
+        "**/generated/**",
+        "**/src/main/java/**",
+        "**/src/test/java/**",
     )
 
     fun allPaths(base: String = "modules"): List<String> =
