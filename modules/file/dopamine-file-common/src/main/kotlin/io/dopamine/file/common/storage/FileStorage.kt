@@ -22,7 +22,7 @@ interface FileStorage {
      *
      * @param storagePath the full internal path or key used to locate the file
      * @return binary content of the file as ByteArray
-     * @throws FileStorageException if the file does not exist or cannot be read
+     * @throws io.dopamine.file.common.exception.FileStorageException if the file does not exist or cannot be read
      */
     fun download(storagePath: String): ByteArray
 
@@ -60,7 +60,7 @@ interface FileStorage {
      *
      * @param storagePath the internal path or key used to locate the file
      * @return a [MimeType] representing the file's content type, or null if unknown or detection is unsupported
-     * @throws FileStorageException if an error occurs during detection
+     * @throws io.dopamine.file.common.exception.FileStorageException if an error occurs during detection
      */
     fun detectContentType(storagePath: String): MimeType? =
         throw UnsupportedOperationException("detectContentType is not supported by this storage")
