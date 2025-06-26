@@ -38,17 +38,15 @@ allprojects {
     }
 
     tasks.withType<KotlinCompile>().configureEach {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.valueOf("JVM_${ModuleConvention.JVM_TARGET}"))
-        }
+        compilerOptions.jvmTarget.set(JvmTarget.fromTarget(ModuleConvention.JVM_TARGET))
     }
 }
 
 val ktlintCliVersion = libs.versions.ktlint.cli.get()
 subprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "jacoco")
     apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     afterEvaluate {
         extensions.configure<DependencyManagementExtension> {
@@ -58,18 +56,20 @@ subprojects {
         }
     }
 
-    configure<KtlintExtension> {
-        version.set(ktlintCliVersion)
-        android.set(false)
-        outputToConsole.set(true)
+    plugins.withId("org.jlleitschuh.gradle.ktlint") {
+        extensions.configure<KtlintExtension> {
+            version.set(ktlintCliVersion)
+            android.set(false)
+            outputToConsole.set(true)
 
-        filter {
-            exclude(KtlintConvention.excludes)
-        }
+            filter {
+                exclude(KtlintConvention.excludes)
+            }
 
-        reporters {
-            KtlintConvention.reporters.forEach {
-                reporter(ReporterType.valueOf(it.uppercase()))
+            reporters {
+                KtlintConvention.reporters.forEach {
+                    reporter(ReporterType.valueOf(it.uppercase()))
+                }
             }
         }
     }
@@ -82,15 +82,13 @@ subprojects {
 
     plugins.withId("org.springframework.boot") {
         dependencies.add("annotationProcessor", libs.spring.boot.configuration.processor.get())
+
+        tasks.named<Jar>("bootJar") { enabled = false }
+        tasks.named<Jar>("jar") { enabled = true }
     }
 
     afterEvaluate {
         configureJacocoReport()
-
-        plugins.withId("org.springframework.boot") {
-            tasks.named("bootJar").configure { enabled = false }
-            tasks.named("jar").configure { enabled = true }
-        }
     }
 }
 
