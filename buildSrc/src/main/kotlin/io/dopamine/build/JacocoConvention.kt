@@ -3,6 +3,7 @@ package io.dopamine.build
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.register
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import java.io.File
 
 object JacocoConvention {
     val excludes = listOf(
@@ -20,26 +21,23 @@ object JacocoConvention {
 
             group = "verification"
             description = "Jacoco coverage report for module: $name"
-
             dependsOn(tasks.named("test"))
 
-            val classDir = layout.buildDirectory.dir("classes/kotlin/main").get().asFile
-            val execDir = layout.buildDirectory.get().asFile
+            val buildDir = layout.buildDirectory.get().asFile
+            val classDir = buildDir.resolve("classes/kotlin/main")
+            val execFile = buildDir.resolve("jacoco/test.exec")
 
             classDirectories.setFrom(
                 fileTree(classDir) {
                     include("**/*.class")
-                    exclude(excludes)
+                    exclude(JacocoConvention.excludes)
                 }
             )
 
-            sourceDirectories.setFrom(files(ModuleConvention.MAIN_SOURCE_DIR))
-            executionData.setFrom(fileTree(execDir).include("jacoco/test.exec"))
+            sourceDirectories.setFrom(files(ModuleConvention.MAIN_KOTLIN))
+            executionData.setFrom(files(execFile))
 
-            reports {
-                html.required.set(true) // NOSONAR
-                xml.required.set(true) // NOSONAR
-            }
+            enableStandardReports()
         }
     }
 
@@ -50,33 +48,36 @@ object JacocoConvention {
 
             dependsOn(subprojects.flatMap { it.tasks.matching { it.name == "test" } })
 
-            val classDirs = subprojects.mapNotNull { sub ->
-                val dir = sub.layout.buildDirectory.get().asFile.resolve("classes/kotlin/main")
-                if (dir.exists()) fileTree(dir) {
-                    include("**/*.class")
-                    exclude(excludes)
-                } else null
-            }
+            val classDirs = subprojects
+                .map { it.layout.buildDirectory.dir("classes/kotlin/main").get().asFile }
+                .filter(File::exists)
+                .map {
+                    fileTree(it) {
+                        include("**/*.class")
+                        exclude(excludes)
+                    }
+                }
 
-            val sourceDirs = subprojects.mapNotNull { sub ->
-                val src = sub.projectDir.resolve(ModuleConvention.MAIN_SOURCE_DIR)
-                if (src.exists()) src else null
-            }
+            val sourceDirs = subprojects
+                .map { it.projectDir.resolve(ModuleConvention.MAIN_KOTLIN) }
+                .filter(File::exists)
 
-            val execFiles = subprojects.mapNotNull { sub ->
-                val exec = sub.layout.buildDirectory.get().asFile.resolve("jacoco/test.exec")
-                if (exec.exists()) exec else null
-            }
+            val execFiles = subprojects
+                .map { it.layout.buildDirectory.get().asFile.resolve("jacoco/test.exec") }
+                .filter(File::exists)
 
             classDirectories.setFrom(classDirs)
             sourceDirectories.setFrom(sourceDirs)
             executionData.setFrom(execFiles)
 
-            reports {
-                html.required.set(true) // NOSONAR
-                xml.required.set(true) // NOSONAR
-            }
+            enableStandardReports()
         }
     }
 
+    private fun JacocoReport.enableStandardReports() {
+        reports {
+            html.required.set(true) // NOSONAR
+            xml.required.set(true)  // NOSONAR
+        }
+    }
 }

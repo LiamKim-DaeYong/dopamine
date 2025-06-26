@@ -5,7 +5,11 @@ object ModuleConvention {
     const val VERSION = "0.0.1-SNAPSHOT"
     const val JVM_TARGET = "21"
 
-    const val MAIN_SOURCE_DIR = "src/main/kotlin"
+    const val MAIN_KOTLIN = "src/main/kotlin"
+    const val MAIN_RESOURCES = "src/main/resources"
+
+    const val TEST_KOTLIN = "src/test/kotlin"
+    const val TEST_RESOURCES = "src/test/resources"
 
     val groups = listOf(
         "auth", "core", "docs", "file", "i18n", "response",
