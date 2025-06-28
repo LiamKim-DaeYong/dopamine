@@ -9,5 +9,6 @@ dependencies {
     implementation(project(":modules:starter:dopamine-starter-mvc"))
 
     implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.data.commons)
     testImplementation(libs.spring.boot.starter.test)
 }

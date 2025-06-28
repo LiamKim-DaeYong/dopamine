@@ -9,6 +9,7 @@ dependencies {
     testImplementation(project(":modules:starter:dopamine-starter-mvc"))
     testImplementation(project(":modules:test:dopamine-test-support"))
     testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.spring.boot.data.commons)
     testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotest.framework.engine)

@@ -1,4 +1,4 @@
-package io.dopamine.trace.common.request
+package io.dopamine.core.resolver
 
 /**
  * Provides access to request-level metadata such as headers or attributes,

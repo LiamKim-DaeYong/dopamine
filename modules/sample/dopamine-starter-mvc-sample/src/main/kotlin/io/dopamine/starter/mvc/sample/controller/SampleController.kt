@@ -3,6 +3,8 @@ package io.dopamine.starter.mvc.sample.controller
 import io.dopamine.starter.mvc.sample.dto.SampleDetailDto
 import io.dopamine.starter.mvc.sample.dto.SampleResponseDto
 import io.dopamine.starter.mvc.sample.dto.SampleStatus
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -50,4 +52,16 @@ class SampleController {
 
     @GetMapping("/error")
     fun getError(): Nothing = throw IllegalStateException("Intentional error for testing.")
+
+    @GetMapping("/page")
+    fun getPage(): PageImpl<SampleResponseDto> {
+        val pageRequest = PageRequest.of(0, 3)
+        val content =
+            listOf(
+                getDto(),
+                getDto().copy(id = 43L),
+                getDto().copy(id = 44L),
+            )
+        return PageImpl(content, pageRequest, 10)
+    }
 }
