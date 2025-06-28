@@ -7,15 +7,27 @@ import java.time.OffsetDateTime
 import java.time.ZoneId
 
 object FixedClock {
-    private val zone: ZoneId = ZoneId.systemDefault()
+    private val defaultZone: ZoneId = ZoneId.systemDefault()
 
-    fun fixed(isoInstant: String): Clock = Clock.fixed(Instant.parse(isoInstant), zone)
+    fun fixed(
+        instant: Instant,
+        zoneId: ZoneId = defaultZone,
+    ): Clock = Clock.fixed(instant, zoneId)
+
+    fun fixed(
+        isoInstant: String,
+        zoneId: ZoneId = defaultZone,
+    ): Clock = Clock.fixed(Instant.parse(isoInstant), zoneId)
 
     fun now(clock: Clock = Clock.systemDefaultZone()): Instant = Instant.now(clock)
 
-    fun nowAsLocalDateTime(clock: Clock = Clock.systemDefaultZone()): LocalDateTime =
-        LocalDateTime.ofInstant(now(clock), zone)
+    fun nowAsLocalDateTime(
+        clock: Clock = Clock.systemDefaultZone(),
+        zoneId: ZoneId = defaultZone,
+    ): LocalDateTime = LocalDateTime.ofInstant(now(clock), zoneId)
 
-    fun nowAsOffsetDateTime(clock: Clock = Clock.systemDefaultZone()): OffsetDateTime =
-        OffsetDateTime.ofInstant(now(clock), zone)
+    fun nowAsOffsetDateTime(
+        clock: Clock = Clock.systemDefaultZone(),
+        zoneId: ZoneId = defaultZone,
+    ): OffsetDateTime = OffsetDateTime.ofInstant(now(clock), zoneId)
 }

@@ -1,6 +1,7 @@
 package io.dopamine.response.common.config
 
 import io.dopamine.core.format.TimestampFormat
+import io.dopamine.response.common.code.CustomResponseCode
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 /**
@@ -17,6 +18,10 @@ data class ResponseProperties(
      * Whether to include the "meta" field in responses (e.g., traceId, paging).
      */
     val includeMeta: Boolean = true,
+    /**
+     * Paths to exclude from automatic response wrapping (e.g., Swagger UI, API docs).
+     */
+    val ignorePaths: List<String> = listOf("/swagger-ui", "/v3/api-docs", "/h2-console"),
     /**
      * Options for configuring the contents of the "meta" field.
      * Ignored if includeMeta is false.
@@ -37,12 +42,8 @@ data class ResponseProperties(
      */
     data class MetaOptions(
         /**
-         * Whether to include the traceId in the "meta" field.
-         */
-        val includeTraceId: Boolean = true,
-        /**
          * Whether to include paging information in the "meta" field.
-         * Automatically extracted if the response contains Page<T> or similar.
+         * Only effective if a paging contributor is registered.
          */
         val includePaging: Boolean = true,
     )

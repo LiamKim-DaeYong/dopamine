@@ -1,9 +1,11 @@
 package io.dopamine.response.mvc.advice
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.dopamine.core.code.CommonSuccessCode
+import io.dopamine.response.common.config.ResponseProperties
 import io.dopamine.response.common.factory.DopamineResponseFactory
+import io.dopamine.response.common.metadata.MetaContributor
 import io.dopamine.response.common.model.DopamineResponse
-import io.dopamine.response.mvc.meta.ResponseMetaBuilder
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
 import org.springframework.core.Ordered
@@ -20,21 +22,21 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
 
 /**
  * Intercepts all REST controller responses and wraps them in a standardized [DopamineResponse] format.
- * If traceId is available, it is added to the meta field (if not already present).
+ * Metadata is automatically injected via registered [MetaContributor]s.
  */
 @RestControllerAdvice
 @Order(Ordered.LOWEST_PRECEDENCE)
 class DopamineResponseAdvice(
     private val factory: DopamineResponseFactory,
     private val objectMapper: ObjectMapper,
-    private val metaBuilder: ResponseMetaBuilder,
+    private val props: ResponseProperties,
 ) : ResponseBodyAdvice<Any> {
     override fun supports(
         returnType: MethodParameter,
         converterType: Class<out HttpMessageConverter<*>>,
     ): Boolean {
         val request = (RequestContextHolder.getRequestAttributes() as? ServletRequestAttributes)?.request
-        if (request != null && isSwaggerRequest(request)) return false
+        if (request != null && isIgnoredPath(request)) return false
 
         val clazz = returnType.parameterType
         return !DopamineResponse::class.java.isAssignableFrom(clazz) &&
@@ -50,18 +52,16 @@ class DopamineResponseAdvice(
         req: ServerHttpRequest,
         res: ServerHttpResponse,
     ): Any? {
-        // Skip reactive types or already wrapped response entities
         if (isReactive(body) || body is ResponseEntity<*>) return body
 
         return when (body) {
-            is DopamineResponse<*> -> {
-                body.copy(meta = metaBuilder.merge(body.meta))
-            }
-
+            is DopamineResponse<*> -> body
             else -> {
-                val wrapped = factory.success(data = body, meta = metaBuilder.build())
-
-                // Special case: when controller returns a raw String
+                val wrapped =
+                    factory.success(
+                        data = body,
+                        responseCode = CommonSuccessCode.SUCCESS,
+                    )
                 if (returnType.parameterType == String::class.java) {
                     objectMapper.writeValueAsString(wrapped)
                 } else {
@@ -76,12 +76,8 @@ class DopamineResponseAdvice(
         return className.startsWith("reactor.core.publisher.")
     }
 
-    private fun isSwaggerRequest(request: HttpServletRequest): Boolean {
-        val acceptHeader = request.getHeader("Accept") ?: ""
+    private fun isIgnoredPath(request: HttpServletRequest): Boolean {
         val uri = request.requestURI
-
-        return acceptHeader.contains("application/vnd.springdoc+json") ||
-            uri.startsWith("/swagger-ui") ||
-            uri.startsWith("/v3/api-docs")
+        return props.ignorePaths.any { uri.startsWith(it) }
     }
 }

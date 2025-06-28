@@ -1,6 +1,7 @@
 package io.dopamine.trace.common.resolver
 
-import io.dopamine.trace.common.request.RequestTraceContext
+import io.dopamine.core.resolver.RequestTraceContext
+import io.dopamine.core.resolver.TraceIdResolver
 
 /**
  * TraceIdResolver that extracts traceId from the request header via TraceContext.

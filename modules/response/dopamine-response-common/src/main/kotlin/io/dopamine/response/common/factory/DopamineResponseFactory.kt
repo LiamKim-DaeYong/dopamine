@@ -1,116 +1,107 @@
 package io.dopamine.response.common.factory
 
-import io.dopamine.i18n.resolver.MessageResolver
-import io.dopamine.response.common.code.DefaultErrorCode
-import io.dopamine.response.common.code.DefaultSuccessCode
-import io.dopamine.response.common.config.CustomResponseCode
+import io.dopamine.core.code.CommonSuccessCode
+import io.dopamine.core.code.ResponseCode
+import io.dopamine.core.resolver.MessageResolver
 import io.dopamine.response.common.config.ResponseProperties
+import io.dopamine.response.common.metadata.MetaContributor
+import io.dopamine.response.common.metadata.ResponseCodeMetadata
+import io.dopamine.response.common.metadata.ResponseCodeRegistry
 import io.dopamine.response.common.model.DopamineResponse
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
-import org.springframework.stereotype.Component
-import java.time.LocalDateTime
+import java.time.Clock
 
 /**
  * Factory responsible for constructing standardized DopamineResponse<T> instances.
- * Formatting, timestamp generation, and response code mapping are handled here.
- * Optional traceId or meta can be injected externally.
+ * Formatting, timestamp generation, and response code/message resolution are handled here.
+ * Optional metadata contributors can enrich the meta field with additional context (e.g., traceId).
  */
-@Component
 class DopamineResponseFactory(
     private val props: ResponseProperties,
+    private val registry: ResponseCodeRegistry,
     private val messageResolver: MessageResolver,
+    private val contributors: List<MetaContributor> = emptyList(),
+    private val clock: Clock = Clock.systemDefaultZone(),
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun <T> success(
         data: T?,
-        responseCode: DefaultSuccessCode = DefaultSuccessCode.SUCCESS,
+        responseCode: ResponseCode = CommonSuccessCode.SUCCESS,
         meta: Map<String, Any>? = null,
-    ): DopamineResponse<T> {
-        val (code, message) = resolveCode(HttpStatus.valueOf(responseCode.httpStatus))
-
-        return DopamineResponse(
-            code = code,
-            message = message,
-            data = data,
-            timestamp = formatTimestamp(),
-            meta = meta,
-        )
-    }
+    ): DopamineResponse<T> = buildResponse(responseCode, data, meta)
 
     fun fail(
-        responseCode: DefaultErrorCode,
+        responseCode: ResponseCode,
         meta: Map<String, Any>? = null,
-    ): DopamineResponse<Nothing> {
-        val (code, message) = resolveCode(HttpStatus.valueOf(responseCode.httpStatus))
-
-        return DopamineResponse(
-            code = code,
-            message = message,
-            data = null,
-            timestamp = formatTimestamp(),
-            meta = meta,
-        )
+        requestData: Any? = null,
+    ): DopamineResponse<Any?> {
+        val metaWithRequest =
+            if (requestData != null) {
+                (meta ?: emptyMap()) + mapOf("request" to requestData)
+            } else {
+                meta
+            }
+        return buildResponse(responseCode, null, metaWithRequest)
     }
 
     fun <T> of(
         data: T?,
-        status: HttpStatus,
+        responseCode: ResponseCode,
         meta: Map<String, Any>? = null,
-        customCode: String? = null,
-        customMessage: String? = null,
+    ): DopamineResponse<T> = buildResponse(responseCode, data, meta)
+
+    private fun <T> buildResponse(
+        responseCode: ResponseCode,
+        data: T?,
+        meta: Map<String, Any>? = null,
     ): DopamineResponse<T> {
-        val timestamp = formatTimestamp()
-        val (code, message) =
-            if (customCode != null && customMessage != null) {
-                customCode to customMessage
-            } else {
-                resolveCode(status)
-            }
+        val (code, message) = resolveMessage(responseCode)
+        val mergedMeta = if (props.includeMeta) mergeMeta(meta, data) else null
 
         return DopamineResponse(
             code = code,
             message = message,
             data = data,
-            timestamp = timestamp,
-            meta = if (props.includeMeta) meta else null,
+            timestamp = formatTimestamp(),
+            meta = mergedMeta,
         )
     }
 
-    private fun formatTimestamp(): String = LocalDateTime.now().format(props.timestampFormat.formatter())
-
-    private val customCodeMap: Map<Int, CustomResponseCode> by lazy {
-        props.codes
-            .groupBy { it.httpStatus }
-            .mapValues { entry ->
-                val duplicates = entry.value
-                if (duplicates.size > 1) {
-                    logger.warn(
-                        "[response] Duplicate CustomResponseCode found for HTTP status {}. Using the first one: {}",
-                        entry.key,
-                        duplicates.first(),
-                    )
-                }
-                duplicates.first()
-            }
+    private fun mergeMeta(
+        meta: Map<String, Any>?,
+        data: Any?,
+    ): Map<String, Any> {
+        val fromContributors =
+            contributors
+                .flatMap { it.contribute(data).entries }
+                .associate { it.toPair() }
+        return (meta ?: emptyMap()) + fromContributors
     }
 
-    private fun resolveCode(status: HttpStatus): Pair<String, String> {
-        customCodeMap[status.value()]?.let { config ->
-            if (config.messageKey != null || config.message != null) {
-                messageResolver.resolve(config.messageKey, config.message)?.let { message ->
-                    return config.code to message
-                }
-            }
+    private fun resolveMessage(responseCode: ResponseCode): Pair<String, String> {
+        val metadata: ResponseCodeMetadata? = registry.get(responseCode)
+
+        if (metadata == null) {
+            logger.warn(
+                "[response] No metadata found for ResponseCode '{}'. Falling back to raw code.",
+                responseCode.code,
+            )
+            return responseCode.code to responseCode.code
         }
 
-        DefaultSuccessCode.fromHttpStatus(status)?.let { default ->
-            messageResolver.resolve(default.messageKey, default.defaultMessage)?.let { message ->
-                return default.code to message
-            }
-        }
+        val message =
+            messageResolver.resolve(
+                metadata.messageKey,
+                metadata.defaultMessage ?: metadata.code,
+            ) ?: metadata.code
 
-        return status.name to status.reasonPhrase
+        return metadata.code to message
     }
+
+    private fun formatTimestamp(): String =
+        clock
+            .instant()
+            .atZone(clock.zone)
+            .format(props.timestampFormat.formatter())
 }

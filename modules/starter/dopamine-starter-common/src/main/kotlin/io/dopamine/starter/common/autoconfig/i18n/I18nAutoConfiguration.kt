@@ -1,7 +1,7 @@
 package io.dopamine.starter.common.autoconfig.i18n
 
+import io.dopamine.core.resolver.MessageResolver
 import io.dopamine.i18n.config.I18nProperties
-import io.dopamine.i18n.resolver.MessageResolver
 import io.dopamine.i18n.resolver.SpringMessageResolver
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean

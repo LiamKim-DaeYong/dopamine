@@ -1,6 +1,4 @@
-package io.dopamine.trace.common.resolver
-
-import io.dopamine.trace.common.request.RequestTraceContext
+package io.dopamine.core.resolver
 
 /**
  * Strategy interface for extracting traceId from a request context.
