@@ -21,7 +21,13 @@ data class ResponseProperties(
     /**
      * Paths to exclude from automatic response wrapping (e.g., Swagger UI, API docs).
      */
-    val ignorePaths: List<String> = listOf("/swagger-ui", "/v3/api-docs", "/h2-console"),
+    val ignorePaths: List<String> =
+        listOf(
+            "/swagger-ui",
+            "/v3/api-docs",
+            "/h2-console",
+            "/favicon.ico",
+        ),
     /**
      * Options for configuring the contents of the "meta" field.
      * Ignored if includeMeta is false.

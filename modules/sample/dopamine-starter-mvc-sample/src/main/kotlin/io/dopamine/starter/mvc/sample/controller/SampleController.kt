@@ -1,12 +1,17 @@
 package io.dopamine.starter.mvc.sample.controller
 
+import io.dopamine.response.common.model.DopamineResponse
 import io.dopamine.starter.mvc.sample.dto.SampleDetailDto
 import io.dopamine.starter.mvc.sample.dto.SampleResponseDto
 import io.dopamine.starter.mvc.sample.dto.SampleStatus
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
@@ -54,7 +59,7 @@ class SampleController {
     fun getError(): Nothing = throw IllegalStateException("Intentional error for testing.")
 
     @GetMapping("/page")
-    fun getPage(): PageImpl<SampleResponseDto> {
+    fun getPage(): Page<SampleResponseDto> {
         val pageRequest = PageRequest.of(0, 3)
         val content =
             listOf(
@@ -64,4 +69,21 @@ class SampleController {
             )
         return PageImpl(content, pageRequest, 10)
     }
+
+    @GetMapping("/entity")
+    fun getEntity(): ResponseEntity<SampleResponseDto> = ResponseEntity.status(HttpStatus.CREATED).body(getDto())
+
+    @GetMapping("/dopamine")
+    fun getDopamine(): DopamineResponse<SampleResponseDto> =
+        DopamineResponse(
+            code = "SUCCESS",
+            message = "Manual dopamine response",
+            data = getDto(),
+            timestamp = LocalDateTime.now().toString(),
+            meta = emptyMap(),
+        )
+
+    @GetMapping("/status")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun noContent(): String? = null
 }
