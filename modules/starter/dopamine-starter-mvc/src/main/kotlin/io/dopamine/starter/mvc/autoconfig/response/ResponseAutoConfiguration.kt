@@ -5,11 +5,12 @@ import io.dopamine.core.resolver.MessageResolver
 import io.dopamine.response.common.config.ResponseProperties
 import io.dopamine.response.common.config.ResponsePropertyKeys
 import io.dopamine.response.common.factory.DopamineResponseFactory
-import io.dopamine.response.common.metadata.CommonErrorMetadata
-import io.dopamine.response.common.metadata.CommonSuccessMetadata
-import io.dopamine.response.common.metadata.DefaultResponseCodeRegistry
+import io.dopamine.response.common.metadata.CommonErrorMetadataProvider
+import io.dopamine.response.common.metadata.CommonSuccessMetadataProvider
+import io.dopamine.response.common.metadata.DefaultResponseMetadataResolver
 import io.dopamine.response.common.metadata.MetaContributor
-import io.dopamine.response.common.metadata.ResponseCodeRegistry
+import io.dopamine.response.common.metadata.ResponseMetadataProvider
+import io.dopamine.response.common.metadata.ResponseMetadataResolver
 import io.dopamine.response.mvc.advice.DopamineErrorResponseAdvice
 import io.dopamine.response.mvc.advice.DopamineResponseAdvice
 import org.springframework.beans.factory.ObjectProvider
@@ -36,24 +37,26 @@ import org.springframework.context.annotation.Bean
 @EnableConfigurationProperties(ResponseProperties::class)
 class ResponseAutoConfiguration {
     @Bean
-    @ConditionalOnMissingBean
-    fun responseCodeRegistry(props: ResponseProperties): ResponseCodeRegistry =
-        DefaultResponseCodeRegistry(
-            predefined = CommonSuccessMetadata.values + CommonErrorMetadata.values,
-            custom = props.codes,
-        )
+    fun commonSuccessMetadataProvider(): ResponseMetadataProvider = CommonSuccessMetadataProvider()
+
+    @Bean
+    fun commonErrorMetadataProvider(): ResponseMetadataProvider = CommonErrorMetadataProvider()
+
+    @Bean
+    fun responseMetadataResolver(providers: List<ResponseMetadataProvider>): ResponseMetadataResolver =
+        DefaultResponseMetadataResolver(providers)
 
     @Bean
     @ConditionalOnMissingBean
     fun dopamineResponseFactory(
         props: ResponseProperties,
-        registry: ResponseCodeRegistry,
+        resolver: ResponseMetadataResolver,
         messageResolver: MessageResolver,
         contributors: ObjectProvider<List<MetaContributor>>,
     ): DopamineResponseFactory =
         DopamineResponseFactory(
             props = props,
-            registry = registry,
+            resolver = resolver,
             messageResolver = messageResolver,
             contributors = contributors.ifAvailable.orEmpty(),
         )
@@ -70,6 +73,6 @@ class ResponseAutoConfiguration {
     @ConditionalOnMissingBean
     fun dopamineErrorResponseAdvice(
         factory: DopamineResponseFactory,
-        registry: ResponseCodeRegistry,
-    ): DopamineErrorResponseAdvice = DopamineErrorResponseAdvice(factory, registry)
+        resolver: ResponseMetadataResolver,
+    ): DopamineErrorResponseAdvice = DopamineErrorResponseAdvice(factory, resolver)
 }

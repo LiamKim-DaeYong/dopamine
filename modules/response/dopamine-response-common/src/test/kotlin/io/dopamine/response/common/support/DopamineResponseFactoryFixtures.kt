@@ -4,20 +4,20 @@ import io.dopamine.core.resolver.MessageResolver
 import io.dopamine.response.common.config.ResponseProperties
 import io.dopamine.response.common.factory.DopamineResponseFactory
 import io.dopamine.response.common.metadata.MetaContributor
-import io.dopamine.response.common.metadata.ResponseCodeRegistry
+import io.dopamine.response.common.metadata.ResponseMetadataResolver
 import java.time.Clock
 
 object DopamineResponseFactoryFixtures {
     fun dummy(
         props: ResponseProperties = ResponseProperties(),
-        registry: ResponseCodeRegistry = DummyCodeRegistry(),
+        resolver: ResponseMetadataResolver = DummyMetadataResolver(),
         messageResolver: MessageResolver = DummyMessageResolver(),
         contributors: List<MetaContributor> = emptyList(),
         clock: Clock = Clock.systemDefaultZone(),
     ): DopamineResponseFactory =
         DopamineResponseFactory(
             props = props,
-            registry = registry,
+            resolver = resolver,
             messageResolver = messageResolver,
             contributors = contributors,
             clock = clock,

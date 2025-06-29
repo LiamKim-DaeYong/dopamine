@@ -4,8 +4,8 @@ import io.dopamine.core.code.CommonSuccessCode
 import io.dopamine.response.common.config.ResponseProperties
 import io.dopamine.response.common.metadata.PagingMetaContributor
 import io.dopamine.response.common.model.PagingMeta
-import io.dopamine.response.common.support.DummyCodeRegistry
 import io.dopamine.response.common.support.DummyMessageResolver
+import io.dopamine.response.common.support.DummyMetadataResolver
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.maps.shouldContainKey
 import io.kotest.matchers.shouldBe
@@ -28,7 +28,7 @@ class DopamineResponseFactoryPagingTest :
                                     includePaging = true,
                                 ),
                         ),
-                    registry = DummyCodeRegistry(),
+                    resolver = DummyMetadataResolver(),
                     messageResolver = DummyMessageResolver(),
                     contributors = listOf(PagingMetaContributor(includePaging = true)),
                 )
@@ -60,7 +60,7 @@ class DopamineResponseFactoryPagingTest :
                                     includePaging = false,
                                 ),
                         ),
-                    registry = DummyCodeRegistry(),
+                    resolver = DummyMetadataResolver(),
                     messageResolver = DummyMessageResolver(),
                     contributors = listOf(PagingMetaContributor(includePaging = false)),
                 )

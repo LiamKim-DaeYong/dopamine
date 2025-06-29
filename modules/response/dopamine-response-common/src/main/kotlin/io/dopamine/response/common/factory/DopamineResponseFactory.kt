@@ -6,7 +6,7 @@ import io.dopamine.core.resolver.MessageResolver
 import io.dopamine.response.common.config.ResponseProperties
 import io.dopamine.response.common.metadata.MetaContributor
 import io.dopamine.response.common.metadata.ResponseCodeMetadata
-import io.dopamine.response.common.metadata.ResponseCodeRegistry
+import io.dopamine.response.common.metadata.ResponseMetadataResolver
 import io.dopamine.response.common.model.DopamineResponse
 import org.slf4j.LoggerFactory
 import java.time.Clock
@@ -18,7 +18,7 @@ import java.time.Clock
  */
 class DopamineResponseFactory(
     private val props: ResponseProperties,
-    private val registry: ResponseCodeRegistry,
+    private val resolver: ResponseMetadataResolver,
     private val messageResolver: MessageResolver,
     private val contributors: List<MetaContributor> = emptyList(),
     private val clock: Clock = Clock.systemDefaultZone(),
@@ -80,7 +80,7 @@ class DopamineResponseFactory(
     }
 
     private fun resolveMessage(responseCode: ResponseCode): Pair<String, String> {
-        val metadata: ResponseCodeMetadata? = registry.get(responseCode)
+        val metadata: ResponseCodeMetadata? = resolver.resolve(responseCode)
 
         if (metadata == null) {
             logger.warn(
