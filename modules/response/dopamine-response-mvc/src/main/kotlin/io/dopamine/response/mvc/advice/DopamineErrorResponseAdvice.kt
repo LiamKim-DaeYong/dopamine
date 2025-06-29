@@ -5,7 +5,7 @@ import io.dopamine.core.code.CommonErrorCode
 import io.dopamine.core.code.ResponseCode
 import io.dopamine.response.common.exception.DopamineException
 import io.dopamine.response.common.factory.DopamineResponseFactory
-import io.dopamine.response.common.metadata.ResponseCodeRegistry
+import io.dopamine.response.common.metadata.ResponseMetadataResolver
 import io.dopamine.response.common.model.DopamineResponse
 import org.slf4j.LoggerFactory
 import org.springframework.core.Ordered
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @Order(Ordered.LOWEST_PRECEDENCE)
 class DopamineErrorResponseAdvice(
     private val factory: DopamineResponseFactory,
-    private val registry: ResponseCodeRegistry,
+    private val resolver: ResponseMetadataResolver,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -97,7 +97,7 @@ class DopamineErrorResponseAdvice(
     }
 
     private fun resolveHttpStatus(errorCode: ResponseCode): HttpStatus =
-        requireNotNull(registry.get(errorCode)?.httpStatus) {
+        requireNotNull(resolver.resolve(errorCode).httpStatus) {
             "Missing metadata for error code: ${errorCode.code}"
         }
 }

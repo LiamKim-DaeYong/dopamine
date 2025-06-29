@@ -5,12 +5,10 @@ import io.dopamine.core.code.CommonSuccessCode
 import io.dopamine.core.code.ResponseCode
 import io.dopamine.core.format.TimestampFormat
 import io.dopamine.response.common.config.ResponseProperties
-import io.dopamine.response.common.metadata.CommonErrorMetadata
-import io.dopamine.response.common.metadata.CommonSuccessMetadata
 import io.dopamine.response.common.metadata.ResponseCodeMetadata
 import io.dopamine.response.common.support.DopamineResponseFactoryFixtures
-import io.dopamine.response.common.support.DummyCodeRegistry
 import io.dopamine.response.common.support.DummyMessageResolver
+import io.dopamine.response.common.support.DummyMetadataResolver
 import io.dopamine.response.common.support.ExpectedResponse
 import io.dopamine.response.common.support.StaticMetaContributor
 import io.dopamine.response.common.support.shouldBeSuccessWith
@@ -45,7 +43,6 @@ class DopamineResponseFactoryTest :
                         props = defaultProps,
                         messageResolver = baseMessageResolver,
                         contributors = listOf(staticContributor),
-                        registry = DummyCodeRegistry(CommonSuccessMetadata.values),
                     )
 
                 val response = factory.success("hello")
@@ -73,7 +70,7 @@ class DopamineResponseFactoryTest :
                     DopamineResponseFactoryFixtures.dummy(
                         messageResolver = baseMessageResolver,
                         contributors = listOf(staticContributor),
-                        registry = DummyCodeRegistry(listOf(customMetadata)),
+                        resolver = DummyMetadataResolver(listOf(customMetadata)),
                     )
 
                 val response =
@@ -131,7 +128,6 @@ class DopamineResponseFactoryTest :
                         props = defaultProps,
                         messageResolver = baseMessageResolver,
                         contributors = listOf(staticContributor),
-                        registry = DummyCodeRegistry(CommonErrorMetadata.values),
                     )
 
                 val response = factory.fail(CommonErrorCode.INVALID_REQUEST)
@@ -152,7 +148,6 @@ class DopamineResponseFactoryTest :
                         props = defaultProps,
                         messageResolver = baseMessageResolver,
                         contributors = listOf(staticContributor),
-                        registry = DummyCodeRegistry(CommonErrorMetadata.values),
                     )
 
                 val request = mapOf("email" to "test@test.com")
@@ -173,7 +168,6 @@ class DopamineResponseFactoryTest :
                         props = defaultProps.copy(includeMeta = false),
                         messageResolver = baseMessageResolver,
                         contributors = listOf(staticContributor),
-                        registry = DummyCodeRegistry(CommonErrorMetadata.values),
                     )
 
                 val response = factory.fail(CommonErrorCode.INTERNAL_SERVER_ERROR)
@@ -184,13 +178,23 @@ class DopamineResponseFactoryTest :
         context("of(...)") {
             val staticContributor = StaticMetaContributor(mapOf("traceId" to defaultTraceId))
 
+            val createdMetadata =
+                ResponseCodeMetadata(
+                    code = CommonSuccessCode.CREATED.code,
+                    httpStatus = HttpStatus.CREATED,
+                    messageKey = "dopamine.success.201",
+                    defaultMessage = "Resource has been created.",
+                )
+
+            val resolver = DummyMetadataResolver(listOf(createdMetadata))
+
             test("should resolve response using metadata registry") {
                 val factory =
                     DopamineResponseFactoryFixtures.dummy(
                         props = defaultProps,
                         messageResolver = baseMessageResolver,
                         contributors = listOf(staticContributor),
-                        registry = DummyCodeRegistry(CommonSuccessMetadata.values),
+                        resolver = resolver,
                     )
 
                 val response =
@@ -218,7 +222,6 @@ class DopamineResponseFactoryTest :
                 val factory =
                     DopamineResponseFactoryFixtures.dummy(
                         props = defaultProps,
-                        messageResolver = baseMessageResolver,
                         contributors = emptyList(),
                         clock = fixedClock,
                     )
