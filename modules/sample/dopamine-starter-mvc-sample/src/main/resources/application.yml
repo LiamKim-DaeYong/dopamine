@@ -3,8 +3,6 @@ dopamine:
     enabled: true
     include-meta: true
     timestampFormat: ISO_8601
-    meta-options:
-      include-trace-id: true
   docs:
     enabled: true
 

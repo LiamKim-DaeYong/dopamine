@@ -7,5 +7,6 @@ plugins {
 
 dependencies {
     api(project(":modules:core:dopamine-core"))
+    api(project(":modules:generator:dopamine-id-generator"))
     implementation(libs.spring.boot.starter.web)
 }
