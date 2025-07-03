@@ -133,7 +133,7 @@
 
 ---
 
-## ⚙️ 빠른 시작 (Getting Started)
+## 🛠️ 빠른 시작 (Getting Started)
 ### 1. Gradle 설정
 ```kotlin
 dependencies {
@@ -203,7 +203,7 @@ dopamine:
 
 ---
 
-## ⚙️ 기술 스택
+## 💻 기술 스택
 * **Spring Boot 3.4.5**
 * **Kotlin 2.1.0**
 * **Gradle (Kotlin DSL) + Version Catalog**
