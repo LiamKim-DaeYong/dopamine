@@ -1,6 +1,6 @@
-package io.dopamine.id.generator
+package io.dopamine.id.generator.strategy
 
-import IdGenerator
+import io.dopamine.id.generator.core.IdGenerator
 import java.util.concurrent.atomic.AtomicLong
 
 /**
@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong
  */
 class SnowflakeIdGenerator(
     private val nodeId: Long,
-    private val customEpoch: Long = DEFAULT_EPOCH,
+    private val customEpoch: Long,
 ) : IdGenerator {
     private val sequence = AtomicLong(0L)
     private var lastTimestamp = -1L
@@ -24,28 +24,29 @@ class SnowflakeIdGenerator(
     /**
      * Generates a Snowflake ID as a raw Long.
      */
-    fun generateLong(): Long = synchronized(this) {
-        var currentTimestamp = timestamp()
+    fun generateLong(): Long =
+        synchronized(this) {
+            var currentTimestamp = timestamp()
 
-        check(currentTimestamp >= lastTimestamp) {
-            "Clock moved backwards. Refusing to generate id."
-        }
-
-        if (currentTimestamp == lastTimestamp) {
-            sequence.set((sequence.incrementAndGet()) and MAX_SEQUENCE)
-            if (sequence.get() == 0L) {
-                currentTimestamp = waitNextMillis(currentTimestamp)
+            check(currentTimestamp >= lastTimestamp) {
+                "Clock moved backwards. Refusing to generate id."
             }
-        } else {
-            sequence.set(0L)
+
+            if (currentTimestamp == lastTimestamp) {
+                sequence.set((sequence.incrementAndGet()) and MAX_SEQUENCE)
+                if (sequence.get() == 0L) {
+                    currentTimestamp = waitNextMillis(currentTimestamp)
+                }
+            } else {
+                sequence.set(0L)
+            }
+
+            lastTimestamp = currentTimestamp
+
+            return ((currentTimestamp - customEpoch) shl TIMESTAMP_SHIFT) or
+                (nodeId shl NODE_ID_SHIFT) or
+                sequence.get()
         }
-
-        lastTimestamp = currentTimestamp
-
-        return ((currentTimestamp - customEpoch) shl TIMESTAMP_SHIFT) or
-            (nodeId shl NODE_ID_SHIFT) or
-            sequence.get()
-    }
 
     /**
      * Generates a Snowflake ID as a lowercase hexadecimal string.
@@ -71,8 +72,5 @@ class SnowflakeIdGenerator(
 
         private const val NODE_ID_SHIFT = SEQUENCE_BITS
         private const val TIMESTAMP_SHIFT = SEQUENCE_BITS + NODE_ID_BITS
-
-        // Custom epoch: 2024-01-01T00:00:00Z
-        private const val DEFAULT_EPOCH = 1704067200000L
     }
 }

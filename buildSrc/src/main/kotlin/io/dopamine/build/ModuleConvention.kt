@@ -12,8 +12,8 @@ object ModuleConvention {
     const val TEST_RESOURCES = "src/test/resources"
 
     val groups = listOf(
-        "auth", "core", "docs", "file", "i18n", "response",
-        "sample", "starter", "test", "trace"
+        "auth", "core", "docs", "file", "generator", "i18n",
+        "response", "sample", "starter", "test", "trace"
     )
 
     object Spring {

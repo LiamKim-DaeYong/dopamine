@@ -1,3 +1,5 @@
+package io.dopamine.id.generator.core
+
 /**
  * Generates a unique identifier.
  *

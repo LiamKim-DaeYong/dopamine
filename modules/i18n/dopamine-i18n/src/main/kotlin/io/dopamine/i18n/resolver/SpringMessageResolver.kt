@@ -7,9 +7,9 @@ import org.springframework.context.i18n.LocaleContextHolder
 import java.util.Locale
 
 /**
- * [MessageResolver] implementation backed by Spring's [org.springframework.context.MessageSource].
+ * [MessageResolver] implementation backed by Spring's [MessageSource].
  *
- * If a message cannot be resolved, the key itself is returned as a fallback.
+ * If a message cannot be resolved, the default message is returned.
  */
 class SpringMessageResolver(
     private val messageSource: MessageSource,
@@ -18,15 +18,14 @@ class SpringMessageResolver(
     override fun resolve(
         messageKey: String?,
         defaultMessage: String?,
+        args: Array<out Any>?,
     ): String? {
-        val locale = localeProvider()
+        if (messageKey.isNullOrBlank()) return defaultMessage
 
-        return messageKey?.let {
-            try {
-                messageSource.getMessage(it, null, null, locale)
-            } catch (ex: NoSuchMessageException) {
-                defaultMessage
-            }
-        } ?: defaultMessage
+        return try {
+            messageSource.getMessage(messageKey, args, defaultMessage, localeProvider())
+        } catch (ex: NoSuchMessageException) {
+            defaultMessage
+        }
     }
 }
