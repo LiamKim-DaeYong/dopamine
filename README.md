@@ -1,93 +1,205 @@
-# 🚀 Dopamine
+# 🧠 Dopamine
 
-**Dopamine**은 Spring Boot 기반 서비스 개발에서 반복되는 인프라 작업을 줄이고,  
-**자동 구성되는 모듈화된 공통 인프라 프레임워크**를 지향합니다.
+**Spring Boot 기반 인프라 기능을 모듈화하여 Starter 형태로 제공하는 인프라 프레임워크입니다.**  
+상용 서비스에서 바로 사용할 수 있는 **품질**과 **확장성**을 목표로 하며,  
+자동 설정 기반 모듈 구조를 통해 **개발자의 반복 작업을 줄여줍니다.**
 
-번아웃 시기를 지나 다시 개발에 집중하기 위한 의지로 시작되었으며,  
-비슷한 고민을 가진 개발자들에게도 의미 있는 도구가 되길 기대합니다.
+> “Dopamine”은 동기부여와 몰입을 유도하는 뇌 내 신경전달물질에서 이름을 따왔습니다.  
+> 반복적인 개발 업무 속에서도 **몰입할 수 있는 동력**을 제공하겠다는 의미가 담겨 있습니다.
 
----
-
-## 🎯 목표
-
-- 실무에서 자주 쓰이는 기능을 모듈화하여 **재사용 가능한 프레임워크** 제공
-- Spring Boot Starter 구조에 기반한 **자동 설정 및 비활성화 옵션 지원**
-- 설정 파일만으로 다양한 기능을 **선택적으로 활성화**할 수 있도록 설계
+> 번아웃 시기를 지나 다시 개발에 집중하기 위한 의지로 시작되었으며,  
+> 비슷한 고민을 가진 개발자들에게도 의미 있는 도구가 되길 기대합니다.
 
 ---
 
-## 🧩 주요 Features
-
-✔️ 공통 응답 포맷 자동 래핑 (`DopamineResponse<T>`)  
-✔️ traceId 자동 생성 및 응답/로그 포함  
-✔️ 예외 포맷 자동 처리 (비즈니스 / 시스템 오류 구분)  
-✔️ 국제화(i18n) 메시지 바인딩 및 커스텀 코드 지원  
-✔️ Kotlin + Gradle(KTS) + Kotest 기반 테스트 환경  
-✔️ 조건부 기능 비활성화 (`dopamine.xxx.enabled=false`)
-
----
-
-## 🧱 모듈 구성
-
-| 모듈                      | 역할 설명 |
-|---------------------------|-----------|
-| `trace-common`            | traceId 생성/전파 추상화 |
-| `trace-mvc`               | Servlet(MDC) 기반 trace 필터 |
-| `response-common`         | 공통 응답 포맷 및 meta 정의 |
-| `response-mvc`            | 응답/예외 자동 래핑 처리 |
-| `i18n`                    | 국제화 메시지 바인딩 및 코드 처리 |
-| `auth-common`             | 인증 추상화 (`UserPrincipal`, `TokenProvider`) |
-| `auth-mvc`                | JWT 기반 인증 필터 및 보안 설정 |
-| `docs`                    | Swagger + Markdown 문서 자동화 |
-| `file-common`             | 파일 업로드 메타 및 응답 포맷 정의 |
-| `file-mvc`                | 파일 업로드, S3 연동 기능 구성 |
-| `starter-common`          | 공통 설정 구성 |
-| `starter-mvc`             | 위의 주요 기능 통합 자동 설정 |
-| `test-support`            | 공통 테스트 유틸 및 인프라 도우미 |
-| `sample`                  | `starter-mvc` 종속 샘플 애플리케이션 |
+## 🚀 주요 특징
+- ✅ **공통 응답 포맷 자동 적용** (`response`)
+- 🔍 **traceId 자동 생성 및 로그/응답 주입** (`trace`)
+- 🌐 **국제화 메시지 응답 지원** (`i18n`)
+- ⚠️ **예외 처리 자동화** (`exception`)
+- 📖 **OpenAPI 문서 자동 구성** (`swagger`)
+- 🆔 **ID 생성기 지원** (`id-generator`)
+- 📁 **파일 업로드 기능** (`file`)
+- 🔐 **인증/인가 모듈 개발 중** (`auth`)
+- ☝️ `dopamine-starter-mvc` 하나만 의존하면 **위 기능 모두 자동 설정**됩니다.
 
 ---
 
-## 📂 샘플 실행 방법
+## 📦 모듈 구성
 
-```bash
-./gradlew :dopamine-starter-mvc-sample:bootRun
-```
+| 모듈                        | 설명 |
+|-----------------------------|------|
+| `dopamine-starter-mvc`      | 주요 기능 통합 자동 설정 |
+| `dopamine-response`         | 공통 응답 포맷 및 예외 래핑 |
+| `dopamine-trace`            | traceId 생성 및 MDC 연동 |
+| `dopamine-i18n`             | 다국어 메시지 처리 |
+| `dopamine-swagger`          | Swagger 문서 자동 구성 |
+| `dopamine-id-generator`     | Snowflake 기반 ID 생성 |
+| `dopamine-file`             | 파일 업로드/썸네일 처리 |
+| `dopamine-auth-common`      | 인증/인가 추상화 계층 |
+| `dopamine-auth-mvc`         | JWT 기반 인증 필터 |
+| `dopamine-sample-mvc`       | 샘플 애플리케이션 |
+| `test-support`              | 테스트 유틸리티 |
+| `starter-common`            | 공통 설정 구성 |
 
-다음 엔드포인트로 샘플 응답 포맷을 확인할 수 있습니다:
+---
 
-```
-GET http://localhost:8080/sample/dto
-```
+## 🧪 예시 응답 포맷
 
-예상 응답 예시 (일부 축약):
-
+### ✅ 일반 단건 응답 예시
 ```json
 {
-  "code": "SUCCESS_200",
-  "message": "Request was successful.",
+  "code": "SUCCESS",
+  "message": "요청이 성공적으로 처리되었습니다.",
   "data": {
     "id": 42,
     "name": "Dopamine",
     "status": "ACTIVE",
-    "createdAt": "2025-06-01T12:13:53.9964288"
+    "createdAt": "2025-07-03T23:14:53.7586458",
+    "tags": ["infra", "spring-boot", "starter"],
+    "details": {
+      "description": "This is a detailed description of the sample.",
+      "score": 87
+    },
+    "optionalField": "optional value"
   },
-  "timestamp": "2025-06-01T12:13:54",
+  "timestamp": "2025-07-03T23:14:53",
   "meta": {
-    "traceId": "b99b6bc6-c05d-4c9d-ae20-e5d27f58a49a"
+    "traceId": "1cfc8e2b-7367-4309-9a9b-871d38c83d09"
+  }
+}
+```
+### ✅ 페이징 응답 예시 (`include-paging: true`)
+```json
+{
+  "code": "SUCCESS",
+  "message": "요청이 성공적으로 처리되었습니다.",
+  "data": {
+    "content": [
+      {
+        "id": 42,
+        "name": "Dopamine",
+        "status": "ACTIVE",
+        "createdAt": "2025-07-03T23:38:07.7477311",
+        "tags": ["infra", "spring-boot", "starter"],
+        "details": {
+          "description": "This is a detailed description of the sample.",
+          "score": 87
+        },
+        "optionalField": "optional value"
+      },
+      {
+        "id": 43,
+        "name": "Dopamine",
+        "status": "ACTIVE",
+        "createdAt": "2025-07-03T23:38:07.7477311",
+        "tags": ["infra", "spring-boot", "starter"],
+        "details": {
+          "description": "This is a detailed description of the sample.",
+          "score": 87
+        },
+        "optionalField": "optional value"
+      },
+      {
+        "id": 44,
+        "name": "Dopamine",
+        "status": "ACTIVE",
+        "createdAt": "2025-07-03T23:38:07.7477311",
+        "tags": ["infra", "spring-boot", "starter"],
+        "details": {
+          "description": "This is a detailed description of the sample.",
+          "score": 87
+        },
+        "optionalField": "optional value"
+      }
+    ],    
+  },
+  "timestamp": "2025-07-03T23:38:07",
+  "meta": {
+    "traceId": "a5038d10-b7d5-4731-99ec-26b444e01248",
+    "paging": {
+      "page": 0,
+      "size": 3,
+      "hasNext": true,
+      "hasPrevious": false,
+      "totalPages": 4,
+      "totalElements": 10,
+      "first": true,
+      "last": false
+    }
   }
 }
 ```
 
-## 🛠️ 향후 로드맵
-- ✅ 인증/인가: JWT, OAuth2, 세션 기반 인증 지원
-- ✅ 파일 관리: 로컬 + S3 업로드, 응답 포맷 통일
-- ✅ Swagger + Markdown 문서 자동화
-- ✅ admin UI 기반 설정/운영 기능
-- ⏳ 마스킹 애노테이션 기반 개인정보 보호 기능
-- ⏳ 알림(SMS/Email), 배치, 캐시 기능 모듈화
-- ⏳ 테스트 유틸, coverage/report 자동화
-- ⏳ persistence 공통 유틸: auditing, soft delete, repository DSL
+---
+
+## ⚙️ 빠른 시작 (Getting Started)
+### 1. Gradle 설정
+```kotlin
+dependencies {
+    implementation("com.github.LiamKim-DaeYong:dopamine-starter-mvc:<version>")
+}
+```
+
+### 2. application.yml 예시
+```yaml
+dopamine:
+  response:
+    enabled: true
+    include-meta: true
+    timestampFormat: ISO_8601
+    ignore-paths:
+      - /swagger-ui
+      - /v3/api-docs
+      - /h2-console
+      - /favicon.ico
+    meta-options:
+      include-paging: true
+    codes:
+      - code: SUCCESS
+        http-status: 200
+        message-key: dopamine.success.200
+        default-message: Request was successful.
+      - code: CREATED
+        http-status: 201
+        message-key: dopamine.success.201
+        default-message: Resource has been created.
+
+  docs:
+    enabled: true
+    swagger:
+      enabled: true
+      title: Dopamine API
+      version: v1.0.0
+      description: API documentation generated by Dopamine
+      additional-groups:
+        - name: default
+          base-packages:
+            - io.dopamine
+
+  i18n:
+    base-names: classpath:/messages
+    default-locale: en
+    encoding: UTF-8
+    fallback-to-system-locale: true
+
+  trace:
+    trace-id-header: X-Trace-ID
+    trace-id-key: traceId
+
+  file:
+    enabled: true
+    base-path: /dopamine/v1/files
+    storages:
+      - name: default
+        type: LOCAL
+        maxSize: 5242880
+        extensionPolicy:
+          mode: DENY
+          patterns:
+            - exe
+            - bat
+```
 
 ---
 
