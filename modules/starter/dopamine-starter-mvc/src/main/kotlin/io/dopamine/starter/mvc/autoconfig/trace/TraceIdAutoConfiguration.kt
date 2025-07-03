@@ -1,8 +1,9 @@
 package io.dopamine.starter.mvc.autoconfig.trace
 
 import io.dopamine.core.resolver.TraceIdResolver
+import io.dopamine.id.generator.core.IdGenerator
+import io.dopamine.trace.common.generator.DelegatingTraceIdGenerator
 import io.dopamine.trace.common.generator.TraceIdGenerator
-import io.dopamine.trace.common.generator.UuidTraceIdGenerator
 import io.dopamine.trace.common.resolver.CompositeTraceIdResolver
 import io.dopamine.trace.common.resolver.HeaderTraceIdResolver
 import io.dopamine.trace.common.store.TraceIdStore
@@ -33,7 +34,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 class TraceIdAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
-    fun traceIdGenerator(): TraceIdGenerator = UuidTraceIdGenerator()
+    fun traceIdGenerator(idGenerator: IdGenerator): TraceIdGenerator = DelegatingTraceIdGenerator(idGenerator)
 
     @Bean
     @ConditionalOnMissingBean
