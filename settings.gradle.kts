@@ -1,16 +1,8 @@
 rootProject.name = "dopamine"
 
 val moduleGroups = listOf(
-    "auth",
-    "core",
-    "docs",
-    "file",
-    "i18n",
-    "response",
-    "sample",
-    "starter",
-    "test",
-    "trace"
+    "auth", "core", "docs", "file", "generator", "i18n",
+    "response", "sample", "starter", "test", "trace"
 )
 
 moduleGroups.forEach { group ->

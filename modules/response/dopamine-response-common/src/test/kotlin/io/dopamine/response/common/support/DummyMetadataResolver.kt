@@ -1,5 +1,7 @@
 package io.dopamine.response.common.support
 
+import io.dopamine.core.code.CommonErrorCode
+import io.dopamine.core.code.CommonSuccessCode
 import io.dopamine.core.code.ResponseCode
 import io.dopamine.response.common.metadata.ResponseCodeMetadata
 import io.dopamine.response.common.metadata.ResponseMetadataResolver
@@ -9,22 +11,28 @@ class DummyMetadataResolver(
     predefined: List<ResponseCodeMetadata> =
         listOf(
             ResponseCodeMetadata(
-                code = "SUCCESS",
+                code = CommonSuccessCode.SUCCESS.code,
                 httpStatus = HttpStatus.OK,
                 messageKey = "dopamine.success.200",
                 defaultMessage = "Request was successful.",
             ),
             ResponseCodeMetadata(
-                code = "INVALID_REQUEST",
+                code = CommonErrorCode.BAD_REQUEST.code,
+                httpStatus = HttpStatus.BAD_REQUEST,
+                messageKey = "dopamine.error.400",
+                defaultMessage = "Bad request.",
+            ),
+            ResponseCodeMetadata(
+                code = CommonErrorCode.INVALID_REQUEST.code,
                 httpStatus = HttpStatus.BAD_REQUEST,
                 messageKey = "dopamine.error.valid.400",
                 defaultMessage = "The request is invalid.",
             ),
             ResponseCodeMetadata(
-                code = "INTERNAL_SERVER_ERROR",
+                code = CommonErrorCode.INTERNAL_SERVER_ERROR.code,
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
-                messageKey = "dopamine.error.sys.500",
-                defaultMessage = "Internal server error.",
+                messageKey = "dopamine.error.500",
+                defaultMessage = "An unexpected error occurred.",
             ),
         ),
 ) : ResponseMetadataResolver {

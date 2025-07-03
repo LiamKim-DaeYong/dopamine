@@ -22,14 +22,4 @@ object DopamineResponseFactoryFixtures {
             contributors = contributors,
             clock = clock,
         )
-
-    fun messageResolverWith(vararg pairs: Pair<String, String>): MessageResolver {
-        val map = pairs.toMap()
-        return object : MessageResolver {
-            override fun resolve(
-                messageKey: String?,
-                defaultMessage: String?,
-            ): String? = messageKey?.let { map[it] } ?: defaultMessage
-        }
-    }
 }

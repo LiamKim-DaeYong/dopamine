@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import java.util.Locale
 
@@ -18,14 +19,18 @@ class I18nAutoConfiguration {
     @ConditionalOnMissingBean(MessageSource::class)
     fun messageSource(props: I18nProperties): MessageSource =
         ReloadableResourceBundleMessageSource().apply {
-            val finalBaseNameList = props.baseNames + "classpath:/dopamine/messages"
-            setBasenames(*finalBaseNameList.toTypedArray())
+            val baseNames = (props.baseNames + "classpath:/dopamine/messages").distinct()
+            setBasenames(*baseNames.toTypedArray())
             setDefaultEncoding(props.encoding)
-            setFallbackToSystemLocale(props.fallbackToSystemLocale)
+            setFallbackToSystemLocale(props.fallbackToSystemLocale) // defaults to false in Spring Boot 3
             setDefaultLocale(Locale.forLanguageTag(props.defaultLocale))
         }
 
     @Bean
     @ConditionalOnMissingBean(MessageResolver::class)
-    fun messageResolver(messageSource: MessageSource): MessageResolver = SpringMessageResolver(messageSource)
+    fun messageResolver(messageSource: MessageSource): MessageResolver =
+        SpringMessageResolver(
+            messageSource = messageSource,
+            localeProvider = { LocaleContextHolder.getLocale() },
+        )
 }
