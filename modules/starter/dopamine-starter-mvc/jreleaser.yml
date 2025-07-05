@@ -34,7 +34,7 @@ release:
   github:
     active: ALWAYS
     tagName: v{{projectVersion}}
-    releaseName: v{{projectVersion}}
+    releaseName: dopamine-starter-mvc v{{projectVersion}} (preview)
     overwrite: true
     changelog:
       formatted: ALWAYS
