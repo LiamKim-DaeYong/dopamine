@@ -28,4 +28,8 @@ signing {
 
 jreleaser {
     gitRootSearch = true
+    project {
+        description.set("Spring Boot starter for shared infrastructure like response, traceId, i18n, etc.")
+        copyright.set("Copyright (c) 2025 DaeYong Kim")
+    }
 }
