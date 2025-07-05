@@ -31,7 +31,6 @@ jreleaser {
 
     project {
         name.set("dopamine-starter-mvc")
-        version.set(project.version.toString())
         description.set("Spring Boot starter for shared infrastructure like response, traceId, i18n, etc")
         authors.set(listOf("DaeYong Kim"))
         license.set("MIT")
