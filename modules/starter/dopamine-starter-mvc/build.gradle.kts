@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
 
-    id("org.jreleaser") version "1.9.0"
+    id("org.jreleaser") version "1.19.0"
     id("signing")
 }
 
@@ -27,9 +27,14 @@ signing {
 }
 
 jreleaser {
-    gitRootSearch = true
+    gitRootSearch.set(true)
+
     project {
-        description.set("Spring Boot starter for shared infrastructure like response, traceId, i18n, etc.")
-        copyright.set("Copyright (c) 2025 DaeYong Kim")
+        name.set("dopamine-starter-mvc")
+        version.set(project.version.toString())
+        description.set("Spring Boot starter for shared infrastructure like response, traceId, i18n, etc")
+        authors.set(listOf("DaeYong Kim"))
+        license.set("MIT")
+        inceptionYear.set("2025")
     }
 }
