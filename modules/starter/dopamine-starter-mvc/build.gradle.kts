@@ -27,13 +27,5 @@ signing {
 }
 
 jreleaser {
-    gitRootSearch.set(true)
-
-    project {
-        name.set("dopamine-starter-mvc")
-        description.set("Spring Boot starter for shared infrastructure like response, traceId, i18n, etc")
-        authors.set(listOf("DaeYong Kim"))
-        license.set("MIT")
-        inceptionYear.set("2025")
-    }
+    configFile.set(file("${rootDir}/.jreleaser.yml"))
 }
