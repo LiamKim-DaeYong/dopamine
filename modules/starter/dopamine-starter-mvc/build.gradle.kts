@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
+
+    id("org.jreleaser") version "1.9.0"
+    id("signing")
 }
 
 dependencies {
@@ -18,3 +21,11 @@ dependencies {
 }
 
 apply<AutoConfigurationImportGeneratorPlugin>()
+
+signing {
+    useGpgCmd()
+}
+
+jreleaser {
+    gitRootSearch = true
+}

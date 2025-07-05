@@ -2,7 +2,7 @@ package io.dopamine.build
 
 object ModuleConvention {
     const val GROUP = "io.dopamine"
-    const val VERSION = "0.0.1-SNAPSHOT"
+    const val VERSION = "0.1.0"
     const val JVM_TARGET = "21"
 
     const val MAIN_KOTLIN = "src/main/kotlin"
