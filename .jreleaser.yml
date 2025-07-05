@@ -7,6 +7,7 @@ project:
   inceptionYear: 2025
 
 signing:
+  enabled: true
   active: ALWAYS
   mode: COMMAND
   command:
@@ -15,6 +16,7 @@ signing:
     passphrase: env:SIGNING_KEY_PASSPHRASE
 
 deploy:
+  enabled: true
   maven:
     central:
       active: ALWAYS
