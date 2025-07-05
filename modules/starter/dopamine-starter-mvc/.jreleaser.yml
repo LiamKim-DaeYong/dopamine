@@ -2,18 +2,12 @@ project:
   name: dopamine-starter-mvc
   version: 0.1.0
   description: Spring Boot starter for shared infrastructure like response, traceId, i18n, etc.
-  copyright: Copyright (c) 2025 DaeYong Kim
-  authors:
-    - DaeYong Kim
+  authors: [DaeYong Kim]
   license: MIT
   inceptionYear: 2025
-  links:
-    homepage: https://github.com/LiamKim-DaeYong/dopamine
-    scm: https://github.com/LiamKim-DaeYong/dopamine
 
 signing:
   active: ALWAYS
-  armored: true
   mode: COMMAND
   command:
     executable: gpg
@@ -33,9 +27,10 @@ deploy:
 release:
   github:
     active: ALWAYS
+    token: env:JRELEASER_GITHUB_TOKEN
+    overwrite: true
     tagName: v{{projectVersion}}
     releaseName: dopamine-starter-mvc v{{projectVersion}} (preview)
-    overwrite: true
     changelog:
       formatted: ALWAYS
       preset: conventional-commits
