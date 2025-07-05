@@ -2,6 +2,7 @@ project:
   name: dopamine-starter-mvc
   version: 0.1.0
   description: Spring Boot starter for shared infrastructure like response, traceId, i18n, etc.
+  copyright: Copyright (c) 2025 DaeYong Kim
   authors:
     - DaeYong Kim
   license: MIT
