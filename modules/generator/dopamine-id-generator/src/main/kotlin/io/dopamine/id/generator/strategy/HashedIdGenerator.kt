@@ -2,7 +2,7 @@ package io.dopamine.id.generator.strategy
 
 import io.dopamine.id.generator.core.IdGenerator
 import java.math.BigInteger
-import java.util.*
+import java.util.UUID
 
 /**
  * Generates a fixed-length hashed ID using Base62-style encoding.

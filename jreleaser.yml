@@ -1,0 +1,40 @@
+project:
+  name: dopamine-starter-mvc
+  version: 0.1.0
+  description: Spring Boot starter for shared infrastructure like response, traceId, i18n, etc.
+  authors:
+    - DaeYong Kim
+  license: MIT
+  inceptionYear: 2025
+  links:
+    homepage: https://github.com/LiamKim-DaeYong/dopamine
+    scm: https://github.com/LiamKim-DaeYong/dopamine
+
+signing:
+  active: ALWAYS
+  armored: true
+  mode: COMMAND
+  command:
+    executable: gpg
+    keyName: env:SIGNING_KEY_ID
+    passphrase: env:SIGNING_KEY_PASSPHRASE
+
+deploy:
+  maven:
+    central:
+      active: ALWAYS
+      groupId: io.github.liamkim-daeyong
+      artifactId: dopamine-starter-mvc
+      credentials:
+        username: env:CENTRAL_PORTAL_USERNAME
+        password: env:CENTRAL_PORTAL_PASSWORD
+
+release:
+  github:
+    active: ALWAYS
+    tagName: v{{projectVersion}}
+    releaseName: v{{projectVersion}}
+    overwrite: true
+    changelog:
+      formatted: ALWAYS
+      preset: conventional-commits
