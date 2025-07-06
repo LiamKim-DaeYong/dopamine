@@ -28,6 +28,17 @@ jobs:
           printf "%s" "$SIGNING_KEY" | base64 --decode > private.asc
           gpg --batch --import private.asc
 
+      - name: DEBUG base64 decode preview
+        run: |
+          echo "[Decoded preview]"
+          printf "%s" "$SIGNING_KEY" | base64 --decode | head -n 10 || echo "[Decode failed]"
+          echo "[End preview]"
+
+      - name: DEBUG decoded length
+        run: |
+          echo "[Decoded length]"
+          printf "%s" "$SIGNING_KEY" | base64 --decode | wc -c || echo "[Decode length failed]"
+
       - name: Decode and import GPG public key
         run: |
           printf "%s" "$SIGNING_PUBLIC_KEY" | base64 --decode > public.asc
