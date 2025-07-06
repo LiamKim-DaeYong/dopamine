@@ -23,14 +23,10 @@ jobs:
       - name: Verify Java version
         run: java -version
 
-      - name: Debug PGP Key
+      - name: Decode and import GPG keys
         run: |
-          echo "$SIGNING_KEY" | head -n 5
-
-      - name: Set up GPG key
-        run: |
-          printf "%s\n" "$SIGNING_KEY" | gpg --batch --import
-          printf "%s\n" "$SIGNING_PUBLIC_KEY" | gpg --batch --import
+          echo "$SIGNING_KEY" | base64 --decode | gpg --batch --import
+          echo "$SIGNING_PUBLIC_KEY" | base64 --decode | gpg --batch --import
 
       - name: Build and publish with JReleaser
         uses: jreleaser/release-action@v2
