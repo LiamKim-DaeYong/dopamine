@@ -25,12 +25,12 @@ jobs:
 
       - name: Decode and import GPG private key
         run: |
-          echo "$SIGNING_KEY" | base64 --decode > private.asc
+          printf "%s" "$SIGNING_KEY" | base64 --decode > private.asc
           gpg --batch --import private.asc
 
       - name: Decode and import GPG public key
         run: |
-          echo "$SIGNING_PUBLIC_KEY" | base64 --decode > public.asc
+          printf "%s" "$SIGNING_PUBLIC_KEY" | base64 --decode > public.asc
           gpg --batch --import public.asc
 
       - name: Build and publish with JReleaser
