@@ -34,9 +34,7 @@ release:
 signing:
   active: ALWAYS
   armored: true
-  mode: MEMORY
-  publicKey: "${SIGNING_PUBLIC_KEY}"
-  secretKey: "${SIGNING_KEY}"
+  mode: COMMAND
   passphrase: "${SIGNING_KEY_PASSPHRASE}"
 
 deploy:

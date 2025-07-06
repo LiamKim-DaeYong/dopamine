@@ -28,8 +28,36 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - name: Verify Java version
+        run: java -version
+
+      - name: Install expect
+        run: sudo apt-get update && sudo apt-get install -y expect
+
       - name: Install gettext for envsubst
-        run: sudo apt-get update && sudo apt-get install -y gettext
+        run: sudo apt-get install -y gettext
+
+      - name: Decode and import GPG private key
+        run: |
+          printf "%s" "$SIGNING_KEY" | base64 --decode > private.asc
+          gpg --batch --import private.asc
+
+      - name: Decode and import GPG public key
+        run: |
+          printf "%s" "$SIGNING_PUBLIC_KEY" | base64 --decode > public.asc
+          gpg --batch --import public.asc
+
+      - name: Trust imported GPG key using expect
+        run: |
+          KEY_ID=$(gpg --list-keys --with-colons | awk -F: '/^pub/ { print $5; exit }')
+          echo "Setting trust level 5 for $KEY_ID"
+          expect <<EOF
+            spawn gpg --command-fd 0 --status-fd 1 --edit-key $KEY_ID trust
+            send "5\n"
+            send "y\n"
+            send "save\n"
+            expect eof
+          EOF
 
       - name: Set project version from tag (strip leading 'v')
         run: echo "PROJECT_VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
