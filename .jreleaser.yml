@@ -46,7 +46,7 @@ deploy:
         username: "${CENTRAL_PORTAL_USERNAME}"
         password: "${CENTRAL_PORTAL_PASSWORD}"
         stagingRepositories:
-          - build/jreleaser/staging
+          - ./build/repos/releases
 
 distributions:
   dopamine-starter-mvc:
