@@ -1,6 +1,6 @@
 project:
   name: dopamine-starter-mvc
-  version: 0.0.0
+  version: 0.0.0  # dummy, overridden by --set-property=projectVersion=...
   description: Spring Boot starter for shared infrastructure
   longDescription: |
     Spring Boot starter for shared infrastructure like response formatting, 
@@ -22,8 +22,8 @@ release:
     owner: LiamKim-DaeYong
     name: dopamine
     token: "{{envs.JRELEASER_GITHUB_TOKEN}}"
-    tagName: "v{{props.projectVersion}}"
-    releaseName: "dopamine-starter-mvc v{{props.projectVersion}} (preview)"
+    tagName: "v{{projectVersion}}"
+    releaseName: "dopamine-starter-mvc v{{projectVersion}} (preview)"
     overwrite: true
     changelog:
       preset: conventional-commits
@@ -54,4 +54,4 @@ distributions:
   dopamine-starter-mvc:
     type: JAVA_BINARY
     artifacts:
-      - path: build/libs/dopamine-starter-mvc-{{props.projectVersion}}.jar
+      - path: build/libs/dopamine-starter-mvc-{{projectVersion}}.jar
