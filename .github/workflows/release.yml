@@ -10,6 +10,14 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    env:
+      SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+      SIGNING_PUBLIC_KEY: ${{ secrets.SIGNING_PUBLIC_KEY }}
+      SIGNING_KEY_PASSPHRASE: ${{ secrets.SIGNING_KEY_PASSPHRASE }}
+      CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+      CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+      JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,11 +31,14 @@ jobs:
       - name: Verify Java version
         run: java -version
 
-      - name: Decode and import GPG private key
-        continue-on-error: true
+      - name: DEBUG check if SIGNING_KEY is set
         run: |
-          printf "%s" "$SIGNING_KEY" | base64 --decode > private.asc
-          gpg --batch --import private.asc
+          echo "SIGNING_KEY length: ${#SIGNING_KEY}"
+          if [ -z "$SIGNING_KEY" ]; then
+            echo "❌ SIGNING_KEY is NOT set!"
+          else
+            echo "✅ SIGNING_KEY is present"
+          fi
 
       - name: DEBUG base64 decode preview
         run: |
@@ -40,6 +51,12 @@ jobs:
           echo "[Decoded length]"
           printf "%s" "$SIGNING_KEY" | base64 --decode | wc -c || echo "[Decode length failed]"
 
+      - name: Decode and import GPG private key
+        continue-on-error: true
+        run: |
+          printf "%s" "$SIGNING_KEY" | base64 --decode > private.asc
+          gpg --batch --import private.asc
+
       - name: Decode and import GPG public key
         run: |
           printf "%s" "$SIGNING_PUBLIC_KEY" | base64 --decode > public.asc
@@ -49,10 +66,3 @@ jobs:
         uses: jreleaser/release-action@v2
         with:
           version: 1.19.0
-        env:
-          JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PUBLIC_KEY: ${{ secrets.SIGNING_PUBLIC_KEY }}
-          SIGNING_KEY_PASSPHRASE: ${{ secrets.SIGNING_KEY_PASSPHRASE }}
-          CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
-          CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
