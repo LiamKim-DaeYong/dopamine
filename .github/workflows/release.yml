@@ -73,6 +73,9 @@ jobs:
       - name: Build JAR
         run: ./gradlew clean build -x test
 
+      - name: Publish to local releases repo
+        run: ./gradlew publishAllPublicationsToReleasesRepository
+
       - name: Build and publish with JReleaser
         uses: jreleaser/release-action@v2
         with:
