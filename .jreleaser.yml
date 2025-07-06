@@ -22,8 +22,8 @@ release:
     owner: LiamKim-DaeYong
     name: dopamine
     token: "{{envs.JRELEASER_GITHUB_TOKEN}}"
-    tagName: "v{{projectVersion}}"
-    releaseName: "dopamine-starter-mvc v{{projectVersion}} (preview)"
+    tagName: "v{{props.projectVersion}}"
+    releaseName: "dopamine-starter-mvc v{{props.projectVersion}} (preview)"
     overwrite: true
     changelog:
       preset: conventional-commits
