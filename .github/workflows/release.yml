@@ -31,28 +31,7 @@ jobs:
       - name: Verify Java version
         run: java -version
 
-      - name: DEBUG check if SIGNING_KEY is set
-        run: |
-          echo "SIGNING_KEY length: ${#SIGNING_KEY}"
-          if [ -z "$SIGNING_KEY" ]; then
-            echo "❌ SIGNING_KEY is NOT set!"
-          else
-            echo "✅ SIGNING_KEY is present"
-          fi
-
-      - name: DEBUG base64 decode preview
-        run: |
-          echo "[Decoded preview]"
-          printf "%s" "$SIGNING_KEY" | base64 --decode | head -n 10 || echo "[Decode failed]"
-          echo "[End preview]"
-
-      - name: DEBUG decoded length
-        run: |
-          echo "[Decoded length]"
-          printf "%s" "$SIGNING_KEY" | base64 --decode | wc -c || echo "[Decode length failed]"
-
       - name: Decode and import GPG private key
-        continue-on-error: true
         run: |
           printf "%s" "$SIGNING_KEY" | base64 --decode > private.asc
           gpg --batch --import private.asc
@@ -66,3 +45,4 @@ jobs:
         uses: jreleaser/release-action@v2
         with:
           version: 1.19.0
+          arguments: full-release --git-root-search
