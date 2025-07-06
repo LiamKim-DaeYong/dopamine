@@ -1,5 +1,6 @@
 project:
   name: dopamine-starter-mvc
+  version: "{{envs.JRELEASER_PROJECT_VERSION}}"
   description: Spring Boot starter for shared infrastructure
   longDescription: |
     Spring Boot starter for shared infrastructure like response formatting, 
@@ -13,7 +14,7 @@ project:
     documentation: https://github.com/LiamKim-DaeYong/dopamine/blob/main/README.md
   java:
     groupId: io.github.liamkim-daeyong
-    version: 11
+    version: 21
 
 release:
   github:
