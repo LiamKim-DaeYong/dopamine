@@ -60,7 +60,7 @@ publishing {
         maven {
             name = "Releases"
             url =
-                layout.buildDirectory
+                rootProject.layout.buildDirectory
                     .dir("repos/releases")
                     .get()
                     .asFile
