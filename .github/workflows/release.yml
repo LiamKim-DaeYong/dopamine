@@ -44,12 +44,6 @@ jobs:
       - name: Set project version from tag (strip leading 'v')
         run: echo "JRELEASER_PROJECT_VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
 
-      - name: Debug project version
-        run: |
-          echo "🔎 GITHUB_REF       = $GITHUB_REF"
-          echo "🔎 GITHUB_REF_NAME  = $GITHUB_REF_NAME"
-          echo "🔎 JRELEASER_PROJECT_VERSION = $JRELEASER_PROJECT_VERSION"
-
       - name: Build and publish with JReleaser
         uses: jreleaser/release-action@v2
         with:
