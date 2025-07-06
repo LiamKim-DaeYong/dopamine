@@ -54,4 +54,4 @@ distributions:
   dopamine-starter-mvc:
     type: JAVA_BINARY
     artifacts:
-      - path: build/libs/dopamine-starter-mvc-{{projectVersion}}.jar
+      - path: build/libs/dopamine-starter-mvc-{{props.projectVersion}}.jar
