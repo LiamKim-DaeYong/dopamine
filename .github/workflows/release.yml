@@ -24,6 +24,7 @@ jobs:
         run: java -version
 
       - name: Decode and import GPG private key
+        continue-on-error: true
         run: |
           printf "%s" "$SIGNING_KEY" | base64 --decode > private.asc
           gpg --batch --import private.asc
