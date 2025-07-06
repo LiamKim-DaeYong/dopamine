@@ -33,7 +33,7 @@ release:
 signing:
   active: ALWAYS
   armored: true
-  mode: MEMORY
+  mode: FILE
   publicKey: "{{envs.SIGNING_PUBLIC_KEY}}"
   secretKey: "{{envs.SIGNING_KEY}}"
   passphrase: "{{envs.SIGNING_KEY_PASSPHRASE}}"
