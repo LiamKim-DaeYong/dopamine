@@ -45,8 +45,6 @@ deploy:
         url: https://central.sonatype.com/api/v1/publisher
         username: "${CENTRAL_PORTAL_USERNAME}"
         password: "${CENTRAL_PORTAL_PASSWORD}"
-        stagingRepositories:
-          - build/jreleaser/staging
 
 distributions:
   dopamine-starter-mvc:
