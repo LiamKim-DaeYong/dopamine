@@ -29,8 +29,8 @@ jobs:
 
       - name: Set up GPG key
         run: |
-          echo "$SIGNING_PUBLIC_KEY" | gpg --batch --import
-          echo "$SIGNING_KEY" | gpg --batch --import
+          printf "%s\n" "$SIGNING_KEY" | gpg --batch --import
+          printf "%s\n" "$SIGNING_PUBLIC_KEY" | gpg --batch --import
 
       - name: Build and publish with JReleaser
         uses: jreleaser/release-action@v2
