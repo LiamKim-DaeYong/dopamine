@@ -31,9 +31,6 @@ jobs:
       - name: Verify Java version
         run: java -version
 
-      - name: Set project version from tag (strip leading 'v')
-        run: echo "JRELEASER_PROJECT_VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
-
       - name: Decode and import GPG private key
         run: |
           printf "%s" "$SIGNING_KEY" | base64 --decode > private.asc
@@ -44,8 +41,11 @@ jobs:
           printf "%s" "$SIGNING_PUBLIC_KEY" | base64 --decode > public.asc
           gpg --batch --import public.asc
 
+      - name: Set project version from tag (strip leading 'v')
+        run: echo "JRELEASER_PROJECT_VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
       - name: Build and publish with JReleaser
         uses: jreleaser/release-action@v2
         with:
           version: 1.19.0
-          arguments: full-release --config-file=.jreleaser.yml
+          arguments: full-release --project-version=${{ env.JRELEASER_PROJECT_VERSION }} --config-file=.jreleaser.yml
