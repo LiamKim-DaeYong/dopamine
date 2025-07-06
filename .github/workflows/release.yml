@@ -17,7 +17,6 @@ jobs:
       CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
       CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
       JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-      JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
 
     steps:
       - name: Checkout code
