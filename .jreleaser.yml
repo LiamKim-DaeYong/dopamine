@@ -53,6 +53,5 @@ deploy:
 distributions:
   dopamine-starter-mvc:
     type: JAVA_BINARY
-    executable: false
     artifacts:
       - path: build/libs/dopamine-starter-mvc-{{projectVersion}}.jar
