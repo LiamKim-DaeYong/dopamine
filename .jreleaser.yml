@@ -1,6 +1,6 @@
 project:
   name: dopamine-starter-mvc
-  version: "{{envs.JRELEASER_PROJECT_VERSION}}"
+  version: {{envs.JRELEASER_PROJECT_VERSION}}
   description: Spring Boot starter for shared infrastructure
   longDescription: |
     Spring Boot starter for shared infrastructure like response formatting, 
@@ -20,9 +20,9 @@ release:
   github:
     owner: LiamKim-DaeYong
     name: dopamine
-    token: "{{envs.JRELEASER_GITHUB_TOKEN}}"
-    tagName: "v{{projectVersion}}"
-    releaseName: "dopamine-starter-mvc v{{projectVersion}} (preview)"
+    token: {{envs.JRELEASER_GITHUB_TOKEN}}
+    tagName: v{{projectVersion}}
+    releaseName: dopamine-starter-mvc v{{projectVersion}} (preview)
     overwrite: true
     changelog:
       preset: conventional-commits
@@ -34,9 +34,9 @@ signing:
   active: ALWAYS
   armored: true
   mode: MEMORY
-  publicKey: "{{envs.SIGNING_PUBLIC_KEY}}"
-  secretKey: "{{envs.SIGNING_KEY}}"
-  passphrase: "{{envs.SIGNING_KEY_PASSPHRASE}}"
+  publicKey: {{envs.SIGNING_PUBLIC_KEY}}
+  secretKey: {{envs.SIGNING_KEY}}
+  passphrase: {{envs.SIGNING_KEY_PASSPHRASE}}
 
 deploy:
   maven:
@@ -44,7 +44,7 @@ deploy:
       sonatype:
         active: ALWAYS
         url: https://central.sonatype.com/api/v1/publisher
-        username: "{{envs.CENTRAL_PORTAL_USERNAME}}"
-        password: "{{envs.CENTRAL_PORTAL_PASSWORD}}"
+        username: {{envs.CENTRAL_PORTAL_USERNAME}}
+        password: {{envs.CENTRAL_PORTAL_PASSWORD}}
         stagingRepositories:
           - build/jreleaser/staging
