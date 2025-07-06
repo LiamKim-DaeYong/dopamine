@@ -19,8 +19,6 @@ dependencies {
     testImplementation(libs.spring.boot.starter.test)
 }
 
-apply<AutoConfigurationImportGeneratorPlugin>()
-
 tasks.jar {
     archiveClassifier.set("")
 }
@@ -61,7 +59,14 @@ publishing {
     repositories {
         maven {
             name = "Releases"
-            url = layout.buildDirectory.dir("repos/releases").get().asFile.toURI()
+            url =
+                layout.buildDirectory
+                    .dir("repos/releases")
+                    .get()
+                    .asFile
+                    .toURI()
         }
     }
 }
+
+apply<AutoConfigurationImportGeneratorPlugin>()
