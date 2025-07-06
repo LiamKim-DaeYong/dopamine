@@ -1,36 +1,49 @@
 project:
   name: dopamine-starter-mvc
-  version: 0.1.0
-  description: Spring Boot starter for shared infrastructure like response, traceId, i18n, etc.
-  authors: [DaeYong Kim]
+  description: Spring Boot starter for shared infrastructure
+  longDescription: |
+    Spring Boot starter for shared infrastructure like response formatting, 
+    trace ID management, i18n support, etc.
+  authors:
+    - DaeYong Kim
   license: MIT
   inceptionYear: 2025
-
-signing:
-  active: ALWAYS
-  mode: COMMAND
-  command:
-    executable: gpg
-    keyName: "env:SIGNING_KEY_ID"
-    passphrase: "env:SIGNING_KEY_PASSPHRASE"
-
-deploy:
-  maven:
-    central:
-      active: ALWAYS
-      groupId: io.github.liamkim-daeyong
-      artifactId: dopamine-starter-mvc
-      credentials:
-        username: "env:CENTRAL_PORTAL_USERNAME"
-        password: "env:CENTRAL_PORTAL_PASSWORD"
+  links:
+    homepage: https://github.com/LiamKim-DaeYong/dopamine
+    documentation: https://github.com/LiamKim-DaeYong/dopamine/blob/main/README.md
+  java:
+    groupId: io.github.liamkim-daeyong
+    version: 11
 
 release:
   github:
-    active: ALWAYS
-    token: "env:JRELEASER_GITHUB_TOKEN"
+    owner: LiamKim-DaeYong
+    name: dopamine
+    token: "{{envs.JRELEASER_GITHUB_TOKEN}}"
+    tagName: "v{{projectVersion}}"
+    releaseName: "dopamine-starter-mvc v{{projectVersion}} (preview)"
     overwrite: true
-    tagName: v{{projectVersion}}
-    releaseName: dopamine-starter-mvc v{{projectVersion}} (preview)
     changelog:
-      formatted: ALWAYS
       preset: conventional-commits
+      formatted: ALWAYS
+    milestone:
+      close: false
+
+signing:
+  active: ALWAYS
+  armored: true
+  mode: MEMORY
+  publicKey: "{{envs.SIGNING_PUBLIC_KEY}}"
+  secretKey: "{{envs.SIGNING_KEY}}"
+  passphrase: "{{envs.SIGNING_KEY_PASSPHRASE}}"
+
+deploy:
+  maven:
+    mavenCentral:
+      sonatype:
+        active: ALWAYS
+        url: https://central.sonatype.com/api/v1/publisher
+        username: "{{envs.CENTRAL_PORTAL_USERNAME}}"
+        password: "{{envs.CENTRAL_PORTAL_PASSWORD}}"
+        stagingRepositories:
+          - build/jreleaser/staging
