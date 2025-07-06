@@ -23,10 +23,24 @@ tasks.jar {
     archiveClassifier.set("")
 }
 
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allSource)
+}
+
+tasks.register<Jar>("javadocJar") {
+    dependsOn("javadoc")
+    archiveClassifier.set("javadoc")
+    from(tasks.named("javadoc"))
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+
             groupId = "io.github.liamkim-daeyong"
             artifactId = "dopamine-starter-mvc"
 
