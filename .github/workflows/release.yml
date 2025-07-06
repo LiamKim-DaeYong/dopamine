@@ -41,6 +41,17 @@ jobs:
           printf "%s" "$SIGNING_PUBLIC_KEY" | base64 --decode > public.asc
           gpg --batch --import public.asc
 
+      - name: Trust imported GPG key
+        run: |
+          KEY_ID=$(gpg --list-keys --with-colons | awk -F: '/^pub/ { print $5; exit }')
+          echo -e "5\ny\n" | gpg --command-fd 0 --expert --edit-key $KEY_ID trust
+
+      - name: Show imported secret keys
+        run: gpg --list-secret-keys --keyid-format LONG
+
+      - name: Show all imported keys
+        run: gpg --list-keys --keyid-format LONG
+
       - name: Set project version from tag (strip leading 'v')
         run: echo "PROJECT_VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
 
