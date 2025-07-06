@@ -35,7 +35,7 @@ signing:
   active: ALWAYS
   armored: true
   mode: COMMAND
-  command: gpg
+  command: GPG
   passphrase: "${SIGNING_KEY_PASSPHRASE}"
 
 deploy:
