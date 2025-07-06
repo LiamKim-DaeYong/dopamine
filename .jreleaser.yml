@@ -1,6 +1,6 @@
 project:
   name: dopamine-starter-mvc
-  version: 0.0.0 # required dummy value, will be overridden
+  version: 0.0.0
   description: Spring Boot starter for shared infrastructure
   longDescription: |
     Spring Boot starter for shared infrastructure like response formatting, 
@@ -12,9 +12,10 @@ project:
   links:
     homepage: https://github.com/LiamKim-DaeYong/dopamine
     documentation: https://github.com/LiamKim-DaeYong/dopamine/blob/main/README.md
-  java:
-    groupId: io.github.liamkim-daeyong
-    version: 21
+  languages:
+    java:
+      groupId: io.github.liamkim-daeyong
+      version: 21
 
 release:
   github:
@@ -48,3 +49,10 @@ deploy:
         password: "{{envs.CENTRAL_PORTAL_PASSWORD}}"
         stagingRepositories:
           - build/jreleaser/staging
+
+distributions:
+  dopamine-starter-mvc:
+    type: JAVA_BINARY
+    executable: false
+    artifacts:
+      - path: build/libs/dopamine-starter-mvc-{{projectVersion}}.jar
