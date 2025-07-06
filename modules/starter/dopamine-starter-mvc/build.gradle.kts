@@ -5,9 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
-
-    id("org.jreleaser") version "1.19.0"
     id("signing")
+    `maven-publish`
 }
 
 dependencies {
@@ -22,10 +21,6 @@ dependencies {
 
 apply<AutoConfigurationImportGeneratorPlugin>()
 
-signing {
-    useGpgCmd()
-}
-
-jreleaser {
-    configFile.set(file("${rootDir}/.jreleaser.yml"))
+tasks.jar {
+    archiveClassifier.set("")
 }
