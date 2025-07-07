@@ -31,41 +31,23 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y expect gettext
+          sudo apt-get install -y gettext
 
       - name: Setup GPG environment
         run: |
           mkdir -p ~/.gnupg
           chmod 700 ~/.gnupg
-          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
           echo "use-agent" >> ~/.gnupg/gpg.conf
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
           gpgconf --kill gpg-agent
 
-      - name: Import GPG private key
+      - name: Import GPG private key (ASCII-armored)
         run: |
           echo "$SIGNING_KEY" > private.asc
-          gpg --batch --import private.asc
-
-      - name: Import GPG public key
-        run: |
-          echo "$SIGNING_PUBLIC_KEY" > public.asc
-          gpg --batch --import public.asc
+          gpg --batch --yes --import private.asc
 
       - name: Warm up GPG keyring
-        run: |
-          gpg --list-secret-keys || true
-
-      - name: Trust imported GPG key
-        run: |
-          KEY_ID=$(gpg --list-keys --with-colons | awk -F: '/^pub/ { print $5; exit }')
-          echo "Setting trust level 5 for $KEY_ID"
-          expect <<EOF
-            spawn gpg --command-fd 0 --status-fd 1 --edit-key $KEY_ID trust
-            send "5\n"
-            send "y\n"
-            send "save\n"
-            expect eof
-          EOF
+        run: gpg --list-secret-keys || true
 
       - name: Set project version from tag (strip leading 'v')
         run: echo "PROJECT_VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
