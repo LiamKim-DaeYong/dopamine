@@ -87,7 +87,7 @@ jreleaser {
 
     release {
         github {
-            token.set(findProperty("githubToken")?.toString())
+            token.set(System.getenv("JRELEASER_GITHUB_TOKEN"))
         }
     }
 
