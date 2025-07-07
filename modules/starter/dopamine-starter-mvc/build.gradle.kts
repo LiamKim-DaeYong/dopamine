@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
+    id("org.jreleaser") version "1.19.0"
     id("signing")
     `maven-publish`
 }
@@ -72,24 +73,44 @@ publishing {
 
     repositories {
         maven {
-            name = "OSSRH"
-            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-            credentials {
-                username = project.findProperty("ossrhUsername")?.toString()
-                password = project.findProperty("ossrhPassword")?.toString()
-            }
+            url = layout.buildDirectory.dir("staging-deploy").get().asFile.toURI()
         }
     }
 }
 
-signing {
-    val signingKey: String? by project
-    val signingPassword: String? by project
-
-    val normalizedKey = signingKey?.replace("\\n", "\n")
-    useInMemoryPgpKeys(normalizedKey, signingPassword)
-
-    sign(publishing.publications["mavenJava"])
-}
-
 apply<AutoConfigurationImportGeneratorPlugin>()
+
+jreleaser {
+    project {
+        gitRootSearch.set(true)
+    }
+
+    release {
+        github {
+            token.set(findProperty("githubToken")?.toString())
+        }
+    }
+
+    signing {
+        active.set(org.jreleaser.model.Active.ALWAYS)
+        armored.set(true)
+        mode.set(org.jreleaser.model.Signing.Mode.MEMORY)
+        publicKey.set(findProperty("signingPublicKey")?.toString())
+        secretKey.set(findProperty("signingKey")?.toString())
+        passphrase.set(findProperty("signingKeyPassphrase")?.toString())
+    }
+
+    deploy {
+        maven {
+            mavenCentral {
+                register("central") {
+                    active.set(org.jreleaser.model.Active.ALWAYS)
+                    url.set("https://central.sonatype.com/api/v1/publisher")
+                    username.set(findProperty("centralPortalUsername")?.toString())
+                    password.set(findProperty("centralPortalPassword")?.toString())
+                    stagingRepository(layout.buildDirectory.dir("staging-deploy").get().asFile.absolutePath)
+                }
+            }
+        }
+    }
+}
