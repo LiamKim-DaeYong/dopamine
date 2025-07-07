@@ -37,14 +37,14 @@ jobs:
       - name: Install gettext for envsubst
         run: sudo apt-get install -y gettext
 
-      - name: Decode and import GPG private key
+      - name: Import GPG private key
         run: |
-          printf "%s" "$SIGNING_KEY" | base64 --decode > private.asc
+          echo "$SIGNING_KEY" > private.asc
           gpg --batch --import private.asc
 
-      - name: Decode and import GPG public key
+      - name: Import GPG public key
         run: |
-          printf "%s" "$SIGNING_PUBLIC_KEY" | base64 --decode > public.asc
+          echo "$SIGNING_PUBLIC_KEY" > public.asc
           gpg --batch --import public.asc
 
       - name: Trust imported GPG key using expect
