@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-      OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-      GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
-      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+      SIGNING_PASSWORD: ${{ secrets.SIGNING_KEY_PASSPHRASE }}
+      OSSRH_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+      OSSRH_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
 
     steps:
       - name: Checkout code
@@ -34,10 +34,10 @@ jobs:
 
       - name: Inject signing and publishing credentials
         run: |
+          echo "signingKey=${SIGNING_KEY}" >> gradle.properties
+          echo "signingPassword=${SIGNING_PASSWORD}" >> gradle.properties
           echo "ossrhUsername=${OSSRH_USERNAME}" >> gradle.properties
           echo "ossrhPassword=${OSSRH_PASSWORD}" >> gradle.properties
-          echo "signingKey=${GPG_SECRET_KEY}" >> gradle.properties
-          echo "signingPassword=${GPG_PASSPHRASE}" >> gradle.properties
 
       - name: Build and publish to Maven Central
         run: ./gradlew publish
