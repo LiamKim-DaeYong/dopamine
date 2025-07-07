@@ -41,10 +41,6 @@ jobs:
           echo "use-agent" >> ~/.gnupg/gpg.conf
           gpgconf --kill gpg-agent
 
-      - name: Set GPG_TTY
-        run: |
-          echo "GPG_TTY=$(tty || echo /dev/tty)" >> $GITHUB_ENV
-
       - name: Import GPG private key
         run: |
           echo "$SIGNING_KEY" > private.asc
