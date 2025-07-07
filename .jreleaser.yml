@@ -35,7 +35,7 @@ signing:
   active: ALWAYS
   armored: true
   mode: COMMAND
-  executable: gpg
+  command: "gpg"
   arguments:
     - --batch
     - --yes
