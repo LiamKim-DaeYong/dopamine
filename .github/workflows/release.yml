@@ -28,22 +28,22 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Verify Java version
-        run: java -version
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y expect gettext
 
-      - name: Install expect
-        run: sudo apt-get update && sudo apt-get install -y expect
-
-      - name: Install gettext for envsubst
-        run: sudo apt-get install -y gettext
-
-      - name: Setup GPG homedir
+      - name: Setup GPG environment
         run: |
           mkdir -p ~/.gnupg
           chmod 700 ~/.gnupg
-          echo "use-agent" >> ~/.gnupg/gpg.conf
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          echo "use-agent" >> ~/.gnupg/gpg.conf
           gpgconf --kill gpg-agent
+
+      - name: Set GPG_TTY
+        run: |
+          echo "GPG_TTY=$(tty || echo /dev/tty)" >> $GITHUB_ENV
 
       - name: Import GPG private key
         run: |
@@ -55,7 +55,11 @@ jobs:
           echo "$SIGNING_PUBLIC_KEY" > public.asc
           gpg --batch --import public.asc
 
-      - name: Trust imported GPG key using expect
+      - name: Warm up GPG keyring
+        run: |
+          gpg --list-secret-keys || true
+
+      - name: Trust imported GPG key
         run: |
           KEY_ID=$(gpg --list-keys --with-colons | awk -F: '/^pub/ { print $5; exit }')
           echo "Setting trust level 5 for $KEY_ID"
