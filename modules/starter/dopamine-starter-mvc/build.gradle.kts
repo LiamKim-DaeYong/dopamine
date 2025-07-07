@@ -29,9 +29,9 @@ tasks.register<Jar>("sourcesJar") {
 }
 
 tasks.register<Jar>("javadocJar") {
-    dependsOn("javadoc")
+    dependsOn(tasks.javadoc)
     archiveClassifier.set("javadoc")
-    from(tasks.named("javadoc"))
+    from(tasks.javadoc)
 }
 
 publishing {
@@ -72,15 +72,22 @@ publishing {
 
     repositories {
         maven {
-            name = "Releases"
-            url =
-                rootProject.layout.buildDirectory
-                    .dir("repos/releases")
-                    .get()
-                    .asFile
-                    .toURI()
+            name = "OSSRH"
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = project.findProperty("ossrhUsername")?.toString()
+                password = project.findProperty("ossrhPassword")?.toString()
+            }
         }
     }
+}
+
+signing {
+    val signingKey: String? by project
+    val signingPassword: String? by project
+
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications["mavenJava"])
 }
 
 apply<AutoConfigurationImportGeneratorPlugin>()
