@@ -34,11 +34,21 @@ release:
 signing:
   active: ALWAYS
   armored: true
-  mode: MEMORY
-  publicKey: "${SIGNING_PUBLIC_KEY}"
-  secretKey: "${SIGNING_KEY}"
-  passphrase: "${SIGNING_KEY_PASSPHRASE}"
-
+  mode: COMMAND
+  command: gpg
+  arguments:
+    - --batch
+    - --yes
+    - --pinentry-mode
+    - loopback
+    - --passphrase
+    - "${SIGNING_KEY_PASSPHRASE}"
+    - --detach-sign
+    - --armor
+    - --output
+    - "${signatureFile}"
+    - "${inputFile}"
+    -
 deploy:
   maven:
     mavenCentral:
