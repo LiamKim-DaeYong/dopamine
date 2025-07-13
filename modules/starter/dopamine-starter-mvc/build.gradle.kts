@@ -1,12 +1,14 @@
 import io.dopamine.build.AutoConfigurationImportGeneratorPlugin
+import org.gradle.jvm.tasks.Jar
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
+
     id("org.jreleaser") version "1.19.0"
-    id("signing")
     `maven-publish`
 }
 
@@ -20,41 +22,79 @@ dependencies {
     testImplementation(libs.spring.boot.starter.test)
 }
 
-tasks.jar {
-    archiveClassifier.set("")
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
-tasks.register<Jar>("sourcesJar") {
-    archiveClassifier.set("sources")
-    from(sourceSets.main.get().allSource)
-}
+tasks {
+    named<BootJar>("bootJar") {
+        enabled = false
+    }
 
-tasks.register<Jar>("javadocJar") {
-    dependsOn(tasks.javadoc)
-    archiveClassifier.set("javadoc")
-    from(tasks.javadoc)
+    named<Jar>("jar") {
+        enabled = true
+        archiveClassifier.set("")
+    }
+
+    named("assemble") {
+        dependsOn("jar")
+    }
+
+    register<Copy>("copyPublicationToStaging") {
+        dependsOn("publishToMavenLocal")
+
+        val sourceDir =
+            layout.buildDirectory
+                .dir("publications/mavenJava")
+                .get()
+                .asFile
+        val targetDir =
+            layout.buildDirectory
+                .dir("libs")
+                .get()
+                .asFile
+
+        doFirst {
+            if (!sourceDir.exists()) {
+                throw GradleException("Expected publication directory does not exist: $sourceDir")
+            }
+        }
+
+        from(sourceDir) {
+            include("*.jar")
+            include("*.pom")
+        }
+
+        into(targetDir)
+    }
+
+    named("jreleaserFullRelease") {
+        dependsOn("copyPublicationToStaging")
+    }
 }
 
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
 
             groupId = "io.github.liamkim-daeyong"
             artifactId = "dopamine-starter-mvc"
+            version = project.version.toString()
 
             pom {
                 name.set("dopamine-starter-mvc")
                 description.set("Spring Boot starter for shared infrastructure")
                 url.set("https://github.com/LiamKim-DaeYong/dopamine")
+
                 licenses {
                     license {
                         name.set("MIT License")
                         url.set("https://opensource.org/licenses/MIT")
                     }
                 }
+
                 developers {
                     developer {
                         id.set("liamkim1018")
@@ -62,55 +102,19 @@ publishing {
                         email.set("liamkim1018@gmail.com")
                     }
                 }
+
                 scm {
                     url.set("https://github.com/LiamKim-DaeYong/dopamine")
-                    connection.set("scm:git:git://github.com/LiamKim-DaeYong/dopamine.git")
-                    developerConnection.set("scm:git:ssh://github.com:LiamKim-DaeYong/dopamine.git")
+                    connection.set("scm:git:https://github.com/LiamKim-DaeYong/dopamine.git")
+                    developerConnection.set("scm:git:ssh://git@github.com:LiamKim-DaeYong/dopamine.git")
                 }
             }
         }
     }
+}
 
-    repositories {
-        maven {
-            url = layout.buildDirectory.dir("staging-deploy").get().asFile.toURI()
-        }
-    }
+jreleaser {
+    gitRootSearch.set(true)
 }
 
 apply<AutoConfigurationImportGeneratorPlugin>()
-
-jreleaser {
-    project {
-        gitRootSearch.set(true)
-    }
-
-    release {
-        github {
-            token.set(System.getenv("JRELEASER_GITHUB_TOKEN"))
-        }
-    }
-
-    signing {
-        active.set(org.jreleaser.model.Active.ALWAYS)
-        armored.set(true)
-        mode.set(org.jreleaser.model.Signing.Mode.MEMORY)
-        publicKey.set(findProperty("signingPublicKey")?.toString())
-        secretKey.set(findProperty("signingKey")?.toString())
-        passphrase.set(findProperty("signingKeyPassphrase")?.toString())
-    }
-
-    deploy {
-        maven {
-            mavenCentral {
-                register("central") {
-                    active.set(org.jreleaser.model.Active.ALWAYS)
-                    url.set("https://central.sonatype.com/api/v1/publisher")
-                    username.set(findProperty("centralPortalUsername")?.toString())
-                    password.set(findProperty("centralPortalPassword")?.toString())
-                    stagingRepository(layout.buildDirectory.dir("staging-deploy").get().asFile.absolutePath)
-                }
-            }
-        }
-    }
-}
