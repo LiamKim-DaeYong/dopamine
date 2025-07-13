@@ -43,5 +43,8 @@ jobs:
           echo "JRELEASER_MAVENCENTRAL_USERNAME=${JRELEASER_MAVENCENTRAL_USERNAME}" >> gradle.properties
           echo "JRELEASER_MAVENCENTRAL_PASSWORD=${JRELEASER_MAVENCENTRAL_PASSWORD}" >> gradle.properties
 
-      - name: Build artifacts and release with JReleaser
-        run: ./gradlew build jreleaserFullRelease
+      - name: Build all artifacts
+        run: ./gradlew build
+
+      - name: Release with JReleaser (run from root project)
+        run: ./gradlew :jreleaserFullRelease
