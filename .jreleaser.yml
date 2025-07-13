@@ -1,6 +1,6 @@
 project:
   name: dopamine-starter-mvc
-  version: "${projectVersion}"
+  version: auto
   description: Spring Boot starter for shared infrastructure
   longDescription: |
     Spring Boot starter for shared infrastructure like response formatting, 
