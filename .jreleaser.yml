@@ -1,0 +1,56 @@
+project:
+  name: dopamine-starter-mvc
+  version: "${projectVersion}"
+  description: Spring Boot starter for shared infrastructure
+  longDescription: |
+    Spring Boot starter for shared infrastructure like response formatting, 
+    trace ID management, i18n support, etc.
+  authors:
+    - DaeYong Kim
+  license: MIT
+  inceptionYear: 2025
+  links:
+    homepage: https://github.com/LiamKim-DaeYong/dopamine
+    documentation: https://github.com/LiamKim-DaeYong/dopamine/blob/main/README.md
+  languages:
+    java:
+      groupId: io.github.liamkim-daeyong
+      version: 21
+
+release:
+  github:
+    owner: LiamKim-DaeYong
+    name: dopamine
+    prerelease: true
+    token: "${JRELEASER_GITHUB_TOKEN}"
+    tagName: "v${projectVersion}"
+    releaseName: "dopamine-starter-mvc v${projectVersion} (preview)"
+    overwrite: true
+    releaseNotesFile: "RELEASE_NOTES/v${projectVersion}.md"
+
+signing:
+  active: ALWAYS
+  armored: true
+  mode: MEMORY
+  publicKey: "${JRELEASER_SIGNING_PUBLIC_KEY}"
+  secretKey: "${JRELEASER_SIGNING_KEY}"
+  passphrase: "${JRELEASER_SIGNING_PASSPHRASE}"
+
+deploy:
+  maven:
+    mavenCentral:
+      sonatype:
+        active: ALWAYS
+        url: https://central.sonatype.com/api/v1/publisher
+        releaseProtocol: api
+        username: "${JRELEASER_MAVENCENTRAL_USERNAME}"
+        password: "${JRELEASER_MAVENCENTRAL_PASSWORD}"
+
+distributions:
+  dopamine-starter-mvc:
+    type: JAVA_BINARY
+    artifacts:
+      - path: modules/starter/dopamine-starter-mvc/build/libs/dopamine-starter-mvc-${projectVersion}.jar
+      - path: modules/starter/dopamine-starter-mvc/build/libs/dopamine-starter-mvc-${projectVersion}-sources.jar
+      - path: modules/starter/dopamine-starter-mvc/build/libs/dopamine-starter-mvc-${projectVersion}-javadoc.jar
+      - path: modules/starter/dopamine-starter-mvc/build/publications/mavenJava/dopamine-starter-mvc-${projectVersion}.pom

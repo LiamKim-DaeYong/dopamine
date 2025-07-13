@@ -137,7 +137,7 @@
 ### 1. Gradle 설정
 ```kotlin
 dependencies {
-    implementation("com.github.LiamKim-DaeYong:dopamine-starter-mvc:0.1.0")
+    implementation("com.github.LiamKim-DaeYong:dopamine-starter-mvc:0.1.0-preview")
 }
 ```
 

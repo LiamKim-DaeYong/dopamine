@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-      SIGNING_PUBLIC_KEY: ${{ secrets.SIGNING_PUBLIC_KEY }}
-      SIGNING_KEY_PASSPHRASE: ${{ secrets.SIGNING_KEY_PASSPHRASE }}
-      CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
-      CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
       JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+      JRELEASER_SIGNING_KEY: ${{ secrets.JRELEASER_SIGNING_KEY }}
+      JRELEASER_SIGNING_PUBLIC_KEY: ${{ secrets.JRELEASER_SIGNING_PUBLIC_KEY }}
+      JRELEASER_SIGNING_PASSPHRASE: ${{ secrets.JRELEASER_SIGNING_PASSPHRASE }}
+      JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
+      JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
 
     steps:
       - name: Checkout code
@@ -36,11 +36,12 @@ jobs:
 
       - name: Inject signing and publishing credentials
         run: |
-          echo "signingKey=${SIGNING_KEY}" >> gradle.properties
-          echo "signingPublicKey=${SIGNING_PUBLIC_KEY}" >> gradle.properties
-          echo "signingKeyPassphrase=${SIGNING_KEY_PASSPHRASE}" >> gradle.properties
-          echo "centralPortalUsername=${CENTRAL_PORTAL_USERNAME}" >> gradle.properties
-          echo "centralPortalPassword=${CENTRAL_PORTAL_PASSWORD}" >> gradle.properties
+          echo "JRELEASER_GITHUB_TOKEN=${JRELEASER_GITHUB_TOKEN}" >> gradle.properties
+          echo "JRELEASER_SIGNING_KEY=${JRELEASER_SIGNING_KEY}" >> gradle.properties
+          echo "JRELEASER_SIGNING_PUBLIC_KEY=${JRELEASER_SIGNING_PUBLIC_KEY}" >> gradle.properties
+          echo "JRELEASER_SIGNING_PASSPHRASE=${JRELEASER_SIGNING_PASSPHRASE}" >> gradle.properties
+          echo "JRELEASER_MAVENCENTRAL_USERNAME=${JRELEASER_MAVENCENTRAL_USERNAME}" >> gradle.properties
+          echo "JRELEASER_MAVENCENTRAL_PASSWORD=${JRELEASER_MAVENCENTRAL_PASSWORD}" >> gradle.properties
 
-      - name: Build and publish to Maven Central
-        run: ./gradlew publish jreleaserFullRelease
+      - name: Build artifacts and release with JReleaser
+        run: ./gradlew build jreleaserFullRelease
