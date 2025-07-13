@@ -12,6 +12,8 @@ plugins {
     `maven-publish`
 }
 
+version = io.dopamine.build.ModuleConvention.VERSION
+
 dependencies {
     api(project(":modules:file:dopamine-file-mvc"))
     api(project(":modules:response:dopamine-response-mvc"))
