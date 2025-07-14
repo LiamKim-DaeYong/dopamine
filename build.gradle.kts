@@ -102,9 +102,7 @@ tasks.named("clean") {
     }
 }
 
-afterEvaluate {
-    plugins.apply("org.jreleaser")
-
+pluginManager.withPlugin("org.jreleaser") {
     extensions.configure<JReleaserExtension> {
         gitRootSearch.set(true)
     }
