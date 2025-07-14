@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
     alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.jreleaser)
 }
 
 val springBootVersion = libs.versions.spring.boot.get()
@@ -98,4 +99,8 @@ tasks.named("clean") {
     doFirst {
         delete(ModuleConvention.buildDirs.map { file(it) })
     }
+}
+
+jreleaser {
+    gitRootSearch.set(true)
 }

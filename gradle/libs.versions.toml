@@ -8,6 +8,7 @@ ktlint-cli = "1.5.0"
 kotest = "5.8.1"
 kotest-spring = "1.3.0"
 jjwt = "0.12.6"
+jreleaser = "1.19.0"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -15,6 +16,7 @@ kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotl
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
+jreleaser = { id = "org.jreleaser", version.ref = "jreleaser" }
 
 [libraries]
 # Spring (version omitted: managed via BOM)
