@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
     alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.jreleaser) apply false
 }
 
 val springBootVersion = libs.versions.spring.boot.get()
@@ -97,5 +98,13 @@ registerJacocoRootReport()
 tasks.named("clean") {
     doFirst {
         delete(ModuleConvention.buildDirs.map { file(it) })
+    }
+}
+
+afterEvaluate {
+    plugins.apply("org.jreleaser")
+
+    jreleaser {
+        gitRootSearch.set(true)
     }
 }

@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
 
-    id("org.jreleaser") version "1.19.0"
     `maven-publish`
 }
 
@@ -70,10 +69,6 @@ tasks {
 
         into(targetDir)
     }
-
-    named("jreleaserFullRelease") {
-        dependsOn("copyPublicationToStaging")
-    }
 }
 
 publishing {
@@ -113,10 +108,6 @@ publishing {
             }
         }
     }
-}
-
-jreleaser {
-    gitRootSearch.set(true)
 }
 
 apply<AutoConfigurationImportGeneratorPlugin>()
