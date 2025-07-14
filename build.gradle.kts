@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+import org.jreleaser.gradle.plugin.JReleaserExtension
 
 plugins {
     base
@@ -104,7 +105,7 @@ tasks.named("clean") {
 afterEvaluate {
     plugins.apply("org.jreleaser")
 
-    jreleaser {
+    extensions.configure<JReleaserExtension> {
         gitRootSearch.set(true)
     }
 }
