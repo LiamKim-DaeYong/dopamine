@@ -1,5 +1,7 @@
 # 🧠 Dopamine
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/LiamKim-DaeYong/dopamine?utm_source=oss&utm_medium=github&utm_campaign=LiamKim-DaeYong%2Fdopamine&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 **Spring Boot 기반 인프라 기능을 모듈화하여 Starter 형태로 제공하는 인프라 프레임워크입니다.**  
 상용 서비스에서 바로 사용할 수 있는 **품질**과 **확장성**을 목표로 하며,  
 자동 설정 기반 모듈 구조를 통해 **개발자의 반복 작업을 줄여줍니다.**
