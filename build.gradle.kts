@@ -8,7 +8,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
-import org.jreleaser.gradle.plugin.JReleaserExtension
 
 plugins {
     base
@@ -18,7 +17,6 @@ plugins {
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
     alias(libs.plugins.ktlint) apply false
-    alias(libs.plugins.jreleaser) apply false
 }
 
 val springBootVersion = libs.versions.spring.boot.get()
@@ -99,11 +97,5 @@ registerJacocoRootReport()
 tasks.named("clean") {
     doFirst {
         delete(ModuleConvention.buildDirs.map { file(it) })
-    }
-}
-
-pluginManager.withPlugin("org.jreleaser") {
-    extensions.configure<JReleaserExtension> {
-        gitRootSearch.set(true)
     }
 }
