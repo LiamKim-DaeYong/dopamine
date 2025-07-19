@@ -9,14 +9,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-
-    env:
-      JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-      JRELEASER_SIGNING_KEY: ${{ secrets.JRELEASER_SIGNING_KEY }}
-      JRELEASER_SIGNING_PUBLIC_KEY: ${{ secrets.JRELEASER_SIGNING_PUBLIC_KEY }}
-      JRELEASER_SIGNING_PASSPHRASE: ${{ secrets.JRELEASER_SIGNING_PASSPHRASE }}
-      JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
-      JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -31,20 +25,33 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Grant permission to gradlew
+      - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Inject signing and publishing credentials
+      - name: Publish to Maven Central
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSPHRASE }}
+        run: ./gradlew publishToMavenCentral --no-configuration-cache --no-daemon --stacktrace --console=plain --warning-mode=all
+
+      - name: Read release notes
+        id: release_notes
         run: |
-          echo "JRELEASER_GITHUB_TOKEN=${JRELEASER_GITHUB_TOKEN}" >> gradle.properties
-          echo "JRELEASER_SIGNING_KEY=${JRELEASER_SIGNING_KEY}" >> gradle.properties
-          echo "JRELEASER_SIGNING_PUBLIC_KEY=${JRELEASER_SIGNING_PUBLIC_KEY}" >> gradle.properties
-          echo "JRELEASER_SIGNING_PASSPHRASE=${JRELEASER_SIGNING_PASSPHRASE}" >> gradle.properties
-          echo "JRELEASER_MAVENCENTRAL_USERNAME=${JRELEASER_MAVENCENTRAL_USERNAME}" >> gradle.properties
-          echo "JRELEASER_MAVENCENTRAL_PASSWORD=${JRELEASER_MAVENCENTRAL_PASSWORD}" >> gradle.properties
+          RELEASE_FILE="RELEASE_NOTES/${{ github.ref_name }}.md"
+          if [ -f "$RELEASE_FILE" ]; then
+            echo "notes<<EOF" >> $GITHUB_OUTPUT
+            cat "$RELEASE_FILE" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "notes=Release ${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Build all artifacts
-        run: ./gradlew build
-
-      - name: Release with JReleaser (run from root project)
-        run: ./gradlew jreleaserFullRelease
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          body: ${{ steps.release_notes.outputs.notes }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'preview') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}

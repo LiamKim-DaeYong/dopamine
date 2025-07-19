@@ -51,3 +51,4 @@ coverage/
 
 # === Secrets ===
 .env
+gradle.properties

@@ -1,6 +1,5 @@
 [versions]
 jjwt = "0.12.6"
-jreleaser = "1.19.0"
 kotest = "5.8.1"
 kotest-spring = "1.3.0"
 ktlint-cli = "1.5.0"
@@ -9,14 +8,15 @@ kotlin = "2.1.0"
 spring-boot = "3.4.5"
 spring-dependency-management = "1.1.7"
 springdoc = "2.8.8"
+vanniktech-maven-publish = "0.32.0"
 
 [plugins]
-jreleaser = { id = "org.jreleaser", version.ref = "jreleaser" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-maven-publish" }
 
 [libraries]
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
