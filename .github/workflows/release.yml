@@ -28,16 +28,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build project
-        run: ./gradlew clean build
-
       - name: Publish to Maven Central
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSPHRASE }}
-        run: ./gradlew publishToMavenCentral --no-configuration-cache --no-daemon
+        run: ./gradlew publishToMavenCentral --no-configuration-cache --no-daemon --stacktrace --console=plain --warning-mode=all
 
       - name: Read release notes
         id: release_notes
