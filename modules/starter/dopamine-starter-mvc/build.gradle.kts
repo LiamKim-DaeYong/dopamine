@@ -68,7 +68,7 @@ mavenPublishing {
 
         scm {
             connection.set("scm:git:git://github.com/LiamKim-DaeYong/dopamine.git")
-            developerConnection.set("scm:git:ssh://github.com/LiamKim-DaeYong/dopamine.git")
+            developerConnection.set("scm:git:ssh://git@github.com/LiamKim-DaeYong/dopamine.git") // ✅ 수정됨
             url.set("https://github.com/LiamKim-DaeYong/dopamine")
         }
     }

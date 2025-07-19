@@ -8,7 +8,7 @@ kotlin = "2.1.0"
 spring-boot = "3.4.5"
 spring-dependency-management = "1.1.7"
 springdoc = "2.8.8"
-vanniktech-maven-publish = "0.28.0"
+vanniktech-maven-publish = "0.32.0"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
