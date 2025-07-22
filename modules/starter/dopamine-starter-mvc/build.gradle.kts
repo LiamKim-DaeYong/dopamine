@@ -56,8 +56,20 @@ tasks {
         dependsOn(shadowJar)
     }
 
+    val sourcesJar by registering(Jar::class) {
+        archiveClassifier.set("sources")
+        from(sourceSets.main.get().allSource)
+    }
+
+    val javadocTask = named<Javadoc>("javadoc")
+
+    val javadocJar by registering(Jar::class) {
+        archiveClassifier.set("javadoc")
+        from(javadocTask.map { it.outputs.files })
+    }
+
     withType<Jar>().configureEach {
-        if (name.contains("sources", true) || name.contains("javadoc", true)) {
+        if (archiveClassifier.getOrElse("") !in listOf("sources", "javadoc", "")) {
             enabled = false
         }
     }
@@ -73,6 +85,9 @@ publishing {
             artifact(tasks.named("shadowJar").get()) {
                 classifier = null
             }
+
+            artifact(tasks.named("sourcesJar").get())
+            artifact(tasks.named("javadocJar").get())
 
             pom {
                 name.set("dopamine-starter-mvc")
