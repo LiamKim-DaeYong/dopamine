@@ -3,13 +3,15 @@ package io.dopamine.build.plugins
 import io.dopamine.build.convention.ModuleConvention
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import java.io.File
 
 class AutoConfigurationImportCollectorPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val generateTask = project.tasks.register("generateAutoConfigurationImportsForThisModule") {
             group = "build setup"
             description = "Scans this module for @AutoConfiguration classes and saves to imports.txt"
+
+            inputs.dir("src/main/kotlin").optional()
+            outputs.file(project.layout.buildDirectory.file("generated/auto-config/imports.txt"))
 
             doLast {
                 val kotlinSrc = project.file("src/main/kotlin")

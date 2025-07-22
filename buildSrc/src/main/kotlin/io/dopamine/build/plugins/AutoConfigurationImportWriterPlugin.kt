@@ -9,6 +9,11 @@ class AutoConfigurationImportWriterPlugin : Plugin<Project> {
             group = "build setup"
             description = "Combines all module-level imports.txt into a single .imports file"
 
+            inputs.files(project.rootProject.subprojects.map {
+                it.layout.buildDirectory.file("generated/auto-config/imports.txt")
+            }).optional()
+            outputs.file("src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports")
+
             doLast {
                 val collectedImports = mutableListOf<String>()
 
@@ -21,6 +26,12 @@ class AutoConfigurationImportWriterPlugin : Plugin<Project> {
                         val entries = importFile.readLines()
                             .map { it.trim() }
                             .filter { it.isNotBlank() }
+                            .filter { entry ->
+                                if (!entry.matches(Regex("^[a-zA-Z][a-zA-Z0-9._]*[a-zA-Z0-9]$"))) {
+                                    project.logger.warn("[auto-config][writer] Skipping invalid entry: $entry")
+                                    false
+                                } else true
+                            }
 
                         if (entries.isNotEmpty()) {
                             project.logger.info("[auto-config][writer] Found ${entries.size} imports from '${sub.name}'")

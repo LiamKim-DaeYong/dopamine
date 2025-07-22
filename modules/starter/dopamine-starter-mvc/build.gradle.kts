@@ -115,8 +115,10 @@ publishing {
             name = "OSSRH"
             url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
-                username = findProperty("mavenCentralUsername") as String
-                password = findProperty("mavenCentralPassword") as String
+                username = findProperty("mavenCentralUsername") as String?
+                    ?: error("mavenCentralUsername property is required for publishing")
+                password = findProperty("mavenCentralPassword") as String?
+                    ?: error("mavenCentralPassword property is required for publishing")
             }
         }
     }
