@@ -1,8 +1,8 @@
-import io.dopamine.build.JacocoConvention.configureJacocoReport
-import io.dopamine.build.JacocoConvention.registerJacocoRootReport
-import io.dopamine.build.KtlintConvention
-import io.dopamine.build.ModuleConvention
-import io.dopamine.build.TestConvention.configureStandardLogging
+import io.dopamine.build.convention.JacocoConvention.configureJacocoReport
+import io.dopamine.build.convention.JacocoConvention.registerJacocoRootReport
+import io.dopamine.build.convention.KtlintConvention
+import io.dopamine.build.convention.ModuleConvention
+import io.dopamine.build.convention.TestConvention.configureStandardLogging
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile

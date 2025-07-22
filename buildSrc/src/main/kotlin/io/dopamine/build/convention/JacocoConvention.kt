@@ -1,4 +1,4 @@
-package io.dopamine.build
+package io.dopamine.build.convention
 
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.register
@@ -30,7 +30,7 @@ object JacocoConvention {
             classDirectories.setFrom(
                 fileTree(classDir) {
                     include("**/*.class")
-                    exclude(JacocoConvention.excludes)
+                    exclude(excludes)
                 }
             )
 

@@ -1,4 +1,4 @@
-package io.dopamine.build
+package io.dopamine.build.convention
 
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
@@ -12,4 +12,3 @@ object TestConvention {
         }
     }
 }
-

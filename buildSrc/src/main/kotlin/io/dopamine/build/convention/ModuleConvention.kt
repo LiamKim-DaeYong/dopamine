@@ -1,4 +1,4 @@
-package io.dopamine.build
+package io.dopamine.build.convention
 
 object ModuleConvention {
     const val GROUP = "io.dopamine"
