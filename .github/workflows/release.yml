@@ -41,11 +41,15 @@ jobs:
         run: |
           RELEASE_FILE="RELEASE_NOTES/${{ github.ref_name }}.md"
           if [ -f "$RELEASE_FILE" ]; then
-            echo "notes<<EOF" >> $GITHUB_OUTPUT
-            cat "$RELEASE_FILE" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
+            {
+              echo 'notes<<EOF'
+              cat "$RELEASE_FILE"
+              echo EOF
+            } >> $GITHUB_OUTPUT
+            echo "has_notes=true" >> $GITHUB_OUTPUT
           else
-            echo "notes=Release ${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "notes=" >> $GITHUB_OUTPUT
+            echo "has_notes=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Create GitHub Release
