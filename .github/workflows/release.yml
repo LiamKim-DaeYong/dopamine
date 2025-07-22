@@ -41,21 +41,27 @@ jobs:
         run: |
           RELEASE_FILE="RELEASE_NOTES/${{ github.ref_name }}.md"
           if [ -f "$RELEASE_FILE" ]; then
-            {
-              echo 'notes<<EOF'
-              cat "$RELEASE_FILE"
-              echo EOF
-            } >> $GITHUB_OUTPUT
-            echo "has_notes=true" >> $GITHUB_OUTPUT
+            NOTES_CONTENT=$(cat "$RELEASE_FILE" | base64 -w 0)
+            echo "notes_encoded=$NOTES_CONTENT" >> "$GITHUB_OUTPUT"
+            echo "has_notes=true" >> "$GITHUB_OUTPUT"
           else
-            echo "notes=" >> $GITHUB_OUTPUT
-            echo "has_notes=false" >> $GITHUB_OUTPUT
+            echo "notes_encoded=" >> "$GITHUB_OUTPUT"
+            echo "has_notes=false" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Decode release notes
+        id: decode_notes
+        if: steps.release_notes.outputs.has_notes == 'true'
+        run: |
+          DECODED_NOTES=$(echo "${{ steps.release_notes.outputs.notes_encoded }}" | base64 -d)
+          echo "notes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$DECODED_NOTES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ github.ref_name }}
-          body: ${{ steps.release_notes.outputs.notes }}
+          body: ${{ steps.release_notes.outputs.has_notes == 'true' && steps.decode_notes.outputs.notes || format('Release {0}', github.ref_name) }}
           draft: false
           prerelease: ${{ contains(github.ref_name, 'preview') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
