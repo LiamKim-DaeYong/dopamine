@@ -1,4 +1,4 @@
-package io.dopamine.build
+package io.dopamine.build.convention
 
 object KtlintConvention {
     val excludes = listOf(

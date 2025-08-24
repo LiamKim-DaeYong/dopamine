@@ -1,4 +1,4 @@
-import io.dopamine.build.AutoConfigurationImportGeneratorPlugin
+import io.dopamine.build.plugins.AutoConfigurationImportCollectorPlugin
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -15,4 +15,4 @@ dependencies {
     testImplementation(libs.spring.boot.starter.test)
 }
 
-apply<AutoConfigurationImportGeneratorPlugin>()
+apply<AutoConfigurationImportCollectorPlugin>()
